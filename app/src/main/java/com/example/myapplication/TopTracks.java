@@ -50,7 +50,7 @@ public class TopTracks extends AppCompatActivity {
     }
 
     void getTracks(Context context) {
-        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")

@@ -51,7 +51,7 @@ public class TopArtists extends AppCompatActivity {
     }
 
     public void getArtists(Context context) {
-        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=&format=json";
 
         final Request request = new Request.Builder()
                 .url(url)

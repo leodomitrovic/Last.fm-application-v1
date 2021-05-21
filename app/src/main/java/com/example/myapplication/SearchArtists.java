@@ -61,7 +61,7 @@ public class SearchArtists extends AppCompatActivity {
     }
 
     public void getArtists(Context context, String s) {
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + s + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + s + "&api_key=&format=json";
 
         final Request request = new Request.Builder()
                 .url(url)
