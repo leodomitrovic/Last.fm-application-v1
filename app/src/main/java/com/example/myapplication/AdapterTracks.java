@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHolder> {
+public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder> {
     private final LayoutInflater layoutInflater;
-    String[][] artists;
+    String[][] tracks;
     ConstraintLayout root;
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView name, listeners, playcount;
+        private final TextView name, listeners, playcount, artist;
         private final ImageView icon;
 
         public ViewHolder(View view) {
@@ -32,31 +32,33 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
             listeners = view.findViewById(R.id.textView12);
             playcount = view.findViewById(R.id.textView13);
             icon = view.findViewById(R.id.imageView2);
+            artist = view.findViewById(R.id.textView14);
         }
     }
 
-    AdapterArtists(Context context, ConstraintLayout root, String[][] artists) {
+    AdapterTracks(Context context, ConstraintLayout root, String[][] tracks) {
         layoutInflater = LayoutInflater.from(context);
         this.root = root;
         this.context = context;
-        this.artists = artists;
+        this.tracks = tracks;
     }
 
     @NonNull
     @Override
-    public AdapterArtists.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterTracks.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_item_artists, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.recyclerview_item_tracks, parent, false);
+        return new AdapterTracks.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterArtists.ViewHolder holder, int position) {
-        String[] artist = artists[position];
-        holder.name.setText(artist[0]);
-        holder.listeners.setText(artist[1]);
-        holder.playcount.setText(artist[2]);
-        Picasso.with(context).load(artist[3]).into(holder.icon);
+    public void onBindViewHolder(@NonNull AdapterTracks.ViewHolder holder, int position) {
+        String[] track_list = tracks[position];
+        holder.name.setText(track_list[0]);
+        holder.listeners.setText(track_list[1]);
+        holder.playcount.setText(track_list[2]);
+        holder.artist.setText(track_list[3]);
+        Picasso.with(context).load(track_list[4]).into(holder.icon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +71,6 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
 
     @Override
     public int getItemCount() {
-        return artists.length;
+        return tracks.length;
     }
 }

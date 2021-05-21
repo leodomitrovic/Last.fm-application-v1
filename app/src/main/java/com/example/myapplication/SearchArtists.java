@@ -6,10 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +31,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class TopArtists extends AppCompatActivity {
+public class SearchArtists extends AppCompatActivity {
     RecyclerView rv;
     ConstraintLayout root;
-    AdapterArtists aa;
+    AdapterSearch as;
     String[][] artist_list;
-    JSONArray o;
     public final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(7, TimeUnit.SECONDS)
             .writeTimeout(7, TimeUnit.SECONDS)
@@ -42,16 +45,23 @@ public class TopArtists extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_top_artists);
-        getArtists(this);
+        setContentView(R.layout.activity_search_artists);
         //show();
-        rv = findViewById(R.id.rv);
-        root = findViewById(R.id.root5);
+        rv = findViewById(R.id.rv2);
+        root = findViewById(R.id.root2);
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        ImageView search = findViewById(R.id.imageView4);
+        EditText e = findViewById(R.id.editTextTextPersonName2);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getArtists(SearchArtists.this, e.getText().toString());
+            }
+        });
     }
 
-    public void getArtists(Context context) {
-        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+    public void getArtists(Context context, String s) {
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + s + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
 
         final Request request = new Request.Builder()
                 .url(url)
@@ -71,18 +81,19 @@ public class TopArtists extends AppCompatActivity {
                     try {
                         JSONObject jsonObject;
                         jsonObject = new JSONObject(artists);
-                        JSONObject js = jsonObject.getJSONObject("artists");
-                        o = js.getJSONArray("artist");
-                        artist_list = new String[o.length()][o.getJSONObject(0).length()];
+                        JSONObject js = jsonObject.getJSONObject("results");
+                        JSONObject o = js.getJSONObject("artistmatches");
+                        JSONArray a = o.getJSONArray("artist");
+                        artist_list = new String[a.length()][a.getJSONObject(0).length()];
                         boolean excep = false;
-                        for (int i = 0; i < o.length(); i++) {
+                        for (int i = 0; i < a.length(); i++) {
                             try {
                                 String[] pom = new String[4];
-                                pom[0] = o.getJSONObject(i).get("name").toString();
-                                pom[1] = o.getJSONObject(i).get("listeners").toString();
-                                pom[2] = o.getJSONObject(i).get("playcount").toString();
-                                JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
-                                pom[3] = a.getJSONObject(0).get("#text").toString();
+                                pom[0] = a.getJSONObject(i).get("name").toString();
+                                pom[1] = a.getJSONObject(i).get("url").toString();
+                                pom[2] = a.getJSONObject(i).get("listeners").toString();
+                                JSONArray b = a.getJSONObject(i).getJSONArray("image");
+                                pom[3] = b.getJSONObject(0).get("#text").toString();
                                 artist_list[i] = pom;
                             } catch (JSONException e) {
                                 excep = true;
@@ -93,8 +104,8 @@ public class TopArtists extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    aa = new AdapterArtists(context, root, artist_list);
-                                    rv.setAdapter(aa);
+                                    as = new AdapterSearch(context, root, artist_list);
+                                    rv.setAdapter(as);
                                 }
                             });
                         }

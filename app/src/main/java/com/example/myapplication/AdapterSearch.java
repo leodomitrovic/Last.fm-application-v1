@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHolder> {
+public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder> {
     private final LayoutInflater layoutInflater;
     String[][] artists;
     ConstraintLayout root;
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView name, listeners, playcount;
+        private final TextView name, url, listeners;
         private final ImageView icon;
 
         public ViewHolder(View view) {
@@ -29,34 +29,34 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
             // Define click listener for the ViewHolder's View
 
             name = view.findViewById(R.id.textView11);
-            listeners = view.findViewById(R.id.textView12);
-            playcount = view.findViewById(R.id.textView13);
             icon = view.findViewById(R.id.imageView2);
+            url = view.findViewById(R.id.textView12);
+            listeners = view.findViewById(R.id.textView18);
         }
     }
 
-    AdapterArtists(Context context, ConstraintLayout root, String[][] artists) {
+    AdapterSearch(Context context, ConstraintLayout root, String[][] tracks) {
         layoutInflater = LayoutInflater.from(context);
         this.root = root;
         this.context = context;
-        this.artists = artists;
+        this.artists = tracks;
     }
 
     @NonNull
     @Override
-    public AdapterArtists.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterSearch.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_item_artists, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.recyclerview_item_search, parent, false);
+        return new AdapterSearch.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterArtists.ViewHolder holder, int position) {
-        String[] artist = artists[position];
-        holder.name.setText(artist[0]);
-        holder.listeners.setText(artist[1]);
-        holder.playcount.setText(artist[2]);
-        Picasso.with(context).load(artist[3]).into(holder.icon);
+    public void onBindViewHolder(@NonNull AdapterSearch.ViewHolder holder, int position) {
+        String[] track_list = artists[position];
+        holder.name.setText(track_list[0]);
+        holder.url.setText(track_list[1]);
+        holder.listeners.setText(track_list[2]);
+        Picasso.with(context).load(track_list[3]).into(holder.icon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHolder> {
+public class AdapterInfo extends RecyclerView.Adapter<AdapterInfo.ViewHolder> {
     private final LayoutInflater layoutInflater;
     String[][] artists;
     ConstraintLayout root;
@@ -35,7 +35,7 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
         }
     }
 
-    AdapterArtists(Context context, ConstraintLayout root, String[][] artists) {
+    AdapterInfo(Context context, ConstraintLayout root, String[][] artists) {
         layoutInflater = LayoutInflater.from(context);
         this.root = root;
         this.context = context;
@@ -44,14 +44,14 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
 
     @NonNull
     @Override
-    public AdapterArtists.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterInfo.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_item_artists, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.recyclerview_item_tracks, parent, false);
+        return new AdapterInfo.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterArtists.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdapterInfo.ViewHolder holder, int position) {
         String[] artist = artists[position];
         holder.name.setText(artist[0]);
         holder.listeners.setText(artist[1]);

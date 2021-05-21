@@ -5,4 +5,12 @@
     <string name="textview">TextView</string>
     <string name="artist_icon">Artist icon</string>
     <string name="tekst">Tekst</string>
+    <string name="name">Name</string>
+    <string name="listeners">Listeners</string>
+    <string name="play_count">Play count</string>
+    <string name="artist">Artist</string>
+    <string name="url">URL</string>
+    <string name="upis">Upis</string>
+    <string name="search">Search</string>
+    <string name="tag">Tag</string>
 </resources>
