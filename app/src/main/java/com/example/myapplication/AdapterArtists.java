@@ -26,7 +26,6 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
 
             name = view.findViewById(R.id.textView11);
             listeners = view.findViewById(R.id.textView12);

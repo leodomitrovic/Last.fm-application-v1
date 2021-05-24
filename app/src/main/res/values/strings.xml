@@ -13,4 +13,7 @@
     <string name="upis">Upis</string>
     <string name="search">Search</string>
     <string name="tag">Tag</string>
+    <string name="top_artists">Top Artists</string>
+    <string name="top_tracks">Top Tracks</string>
+    <string name="search_artists">Search Artists</string>
 </resources>

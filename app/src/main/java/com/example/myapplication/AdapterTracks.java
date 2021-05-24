@@ -26,7 +26,6 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
 
             name = view.findViewById(R.id.textView11);
             listeners = view.findViewById(R.id.textView12);
@@ -59,14 +58,6 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
         holder.playcount.setText(track_list[2]);
         holder.artist.setText(track_list[3]);
         Picasso.with(context).load(track_list[4]).into(holder.icon);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, ArtistDetail.class);
-                i.putExtra("name", holder.name.getText());
-                context.startActivity(i);
-            }
-        });
     }
 
     @Override

@@ -74,30 +74,22 @@ public class TopArtists extends AppCompatActivity {
                         JSONObject js = jsonObject.getJSONObject("artists");
                         o = js.getJSONArray("artist");
                         artist_list = new String[o.length()][o.getJSONObject(0).length()];
-                        boolean excep = false;
                         for (int i = 0; i < o.length(); i++) {
-                            try {
-                                String[] pom = new String[4];
-                                pom[0] = o.getJSONObject(i).get("name").toString();
-                                pom[1] = o.getJSONObject(i).get("listeners").toString();
-                                pom[2] = o.getJSONObject(i).get("playcount").toString();
-                                JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
-                                pom[3] = a.getJSONObject(0).get("#text").toString();
-                                artist_list[i] = pom;
-                            } catch (JSONException e) {
-                                excep = true;
-                                e.printStackTrace();
+                            String[] pom = new String[4];
+                            pom[0] = o.getJSONObject(i).get("name").toString();
+                            pom[1] = o.getJSONObject(i).get("listeners").toString();
+                            pom[2] = o.getJSONObject(i).get("playcount").toString();
+                            JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
+                            pom[3] = a.getJSONObject(0).get("#text").toString();
+                            artist_list[i] = pom;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                aa = new AdapterArtists(context, root, artist_list);
+                                rv.setAdapter(aa);
                             }
-                        }
-                        if (!excep) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    aa = new AdapterArtists(context, root, artist_list);
-                                    rv.setAdapter(aa);
-                                }
-                            });
-                        }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                         new Handler(Looper.getMainLooper()).post(new Runnable() {

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -46,7 +45,6 @@ public class SearchArtists extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_artists);
-        //show();
         rv = findViewById(R.id.rv2);
         root = findViewById(R.id.root2);
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -85,30 +83,22 @@ public class SearchArtists extends AppCompatActivity {
                         JSONObject o = js.getJSONObject("artistmatches");
                         JSONArray a = o.getJSONArray("artist");
                         artist_list = new String[a.length()][a.getJSONObject(0).length()];
-                        boolean excep = false;
                         for (int i = 0; i < a.length(); i++) {
-                            try {
-                                String[] pom = new String[4];
-                                pom[0] = a.getJSONObject(i).get("name").toString();
-                                pom[1] = a.getJSONObject(i).get("url").toString();
-                                pom[2] = a.getJSONObject(i).get("listeners").toString();
-                                JSONArray b = a.getJSONObject(i).getJSONArray("image");
-                                pom[3] = b.getJSONObject(0).get("#text").toString();
-                                artist_list[i] = pom;
-                            } catch (JSONException e) {
-                                excep = true;
-                                e.printStackTrace();
+                            String[] pom = new String[4];
+                            pom[0] = a.getJSONObject(i).get("name").toString();
+                            pom[1] = a.getJSONObject(i).get("url").toString();
+                            pom[2] = a.getJSONObject(i).get("listeners").toString();
+                            JSONArray b = a.getJSONObject(i).getJSONArray("image");
+                            pom[3] = b.getJSONObject(0).get("#text").toString();
+                            artist_list[i] = pom;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                as = new AdapterSearch(context, root, artist_list);
+                                rv.setAdapter(as);
                             }
-                        }
-                        if (!excep) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    as = new AdapterSearch(context, root, artist_list);
-                                    rv.setAdapter(as);
-                                }
-                            });
-                        }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                         new Handler(Looper.getMainLooper()).post(new Runnable() {

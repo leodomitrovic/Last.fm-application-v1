@@ -72,10 +72,7 @@ public class TopTracks extends AppCompatActivity {
                         JSONObject js = jsonObject.getJSONObject("tracks");
                         o = js.getJSONArray("track");
                         tracks_list = new String[o.length()][o.getJSONObject(0).length()];
-                        boolean excep = false;
-                        System.out.println("Ajmo" + o.length());
                         for (int i = 0; i < o.length(); i++) {
-                            try {
                                 String[] pom = new String[5];
                                 pom[0] = o.getJSONObject(i).get("name").toString();
                                 pom[1] = o.getJSONObject(i).get("listeners").toString();
@@ -85,20 +82,14 @@ public class TopTracks extends AppCompatActivity {
                                 JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
                                 pom[4] = a.getJSONObject(0).get("#text").toString();
                                 tracks_list[i] = pom;
-                            } catch (JSONException e) {
-                                excep = true;
-                                e.printStackTrace();
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                at = new AdapterTracks(context, root, tracks_list);
+                                rv.setAdapter(at);
                             }
-                        }
-                        if (!excep) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    at = new AdapterTracks(context, root, tracks_list);
-                                    rv.setAdapter(at);
-                                }
-                            });
-                        }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                         new Handler(Looper.getMainLooper()).post(new Runnable() {

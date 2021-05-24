@@ -23,7 +23,7 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 Intent i=new Intent(SplashScreen.this,
-                        SearchArtists.class);
+                        MainActivity.class);
                 startActivity(i);
                 finish();
             }

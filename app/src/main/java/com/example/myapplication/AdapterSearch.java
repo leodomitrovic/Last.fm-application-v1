@@ -26,7 +26,6 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
 
             name = view.findViewById(R.id.textView11);
             icon = view.findViewById(R.id.imageView2);
