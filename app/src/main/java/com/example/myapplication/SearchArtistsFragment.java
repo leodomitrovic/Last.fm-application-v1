@@ -1,16 +1,18 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import android.app.Activity;
+import android.os.Bundle;
+
+import android.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -30,36 +32,49 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class SearchArtists extends AppCompatActivity {
+public class SearchArtistsFragment extends Fragment {
     RecyclerView rv;
-    ConstraintLayout root;
     AdapterSearch as;
     String[][] artist_list;
+    Activity activity;
     public final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(7, TimeUnit.SECONDS)
             .writeTimeout(7, TimeUnit.SECONDS)
             .readTimeout(7, TimeUnit.SECONDS)
             .build();
 
+    public SearchArtistsFragment() {
+        // Required empty public constructor
+    }
+
+    public SearchArtistsFragment(Activity activity) {
+        this.activity = activity;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_artists);
-        rv = findViewById(R.id.rv2);
-        root = findViewById(R.id.root2);
-        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        ImageView search = findViewById(R.id.imageView4);
-        EditText e = findViewById(R.id.editTextTextPersonName2);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_search_artists, container, false);
+        rv = view.findViewById(R.id.rv2);
+        rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        ImageView search = view.findViewById(R.id.imageView4);
+        EditText e = view.findViewById(R.id.editTextTextPersonName2);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getArtists(SearchArtists.this, e.getText().toString());
+                getArtists(activity, e.getText().toString());
             }
         });
+        return  view;
     }
 
-    public void getArtists(Context context, String s) {
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + s + "&api_key=&format=json";
+    public void getArtists(Activity activity, String s) {
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + s + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
 
         final Request request = new Request.Builder()
                 .url(url)
@@ -92,10 +107,10 @@ public class SearchArtists extends AppCompatActivity {
                             pom[3] = b.getJSONObject(0).get("#text").toString();
                             artist_list[i] = pom;
                         }
-                        runOnUiThread(new Runnable() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                as = new AdapterSearch(context, root, artist_list);
+                                as = new AdapterSearch(activity, artist_list);
                                 rv.setAdapter(as);
                             }
                         });
@@ -104,7 +119,7 @@ public class SearchArtists extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), "Artists not found", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity.getApplicationContext(), "Artists not found", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

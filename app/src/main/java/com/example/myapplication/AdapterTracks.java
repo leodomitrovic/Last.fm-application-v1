@@ -17,7 +17,6 @@ import com.squareup.picasso.Picasso;
 public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder> {
     private final LayoutInflater layoutInflater;
     String[][] tracks;
-    ConstraintLayout root;
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -35,9 +34,9 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
         }
     }
 
-    AdapterTracks(Context context, ConstraintLayout root, String[][] tracks) {
+    AdapterTracks(Context context, String[][] tracks) {
         layoutInflater = LayoutInflater.from(context);
-        this.root = root;
+        //this.root = root;
         this.context = context;
         this.tracks = tracks;
     }

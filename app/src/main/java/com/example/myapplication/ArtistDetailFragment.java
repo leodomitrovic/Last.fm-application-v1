@@ -1,15 +1,18 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import android.app.Activity;
+import android.os.Bundle;
+
+import android.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,47 +34,59 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ArtistDetail extends AppCompatActivity {
+public class ArtistDetailFragment extends Fragment {
     RecyclerView rv;
-    ConstraintLayout root;
     AdapterTracks at;
     String[][] tracks_list;
     JSONArray o;
-    String artist;
+    String artist, artist_name;
     TextView name, listeners, playcount, urlv, tag;
     ImageView icon;
+    Activity activity;
     public final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(7, TimeUnit.SECONDS)
             .writeTimeout(7, TimeUnit.SECONDS)
             .readTimeout(7, TimeUnit.SECONDS)
             .build();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artist_info);
-        name = findViewById(R.id.textView6);
-        listeners = findViewById(R.id.textView2);
-        playcount = findViewById(R.id.textView);
-        icon = findViewById(R.id.imageView3);
-        urlv = findViewById(R.id.textView16);
-        tag = findViewById(R.id.textView20);
-        artist = getIntent().getStringExtra("name");
-        getInfo(this);
-        getTracks(this);
-        //show();
-        rv = findViewById(R.id.rv6);
-        root = findViewById(R.id.root5);
-        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
+    public ArtistDetailFragment() {
+        // Required empty public constructor
     }
 
-    void getInfo(Context context) {
+    public ArtistDetailFragment(Activity activity, String artist_name) {
+        this.activity = activity;
+        this.artist_name = artist_name;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_artist_info, container, false);
+        name = view.findViewById(R.id.textView6);
+        listeners = view.findViewById(R.id.textView2);
+        playcount = view.findViewById(R.id.textView);
+        icon = view.findViewById(R.id.imageView3);
+        urlv = view.findViewById(R.id.textView16);
+        tag = view.findViewById(R.id.textView20);
+        artist = artist_name;
+        getInfo(activity);
+        getTracks(activity);
+        rv = view.findViewById(R.id.rv6);
+        rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        return view;
+    }
+
+    void getInfo(Activity activity) {
         String artist1 = artist;
         if (artist1.contains(" ")) {
             artist1.replace(" ", "+");
         }
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")
@@ -101,12 +116,12 @@ public class ArtistDetail extends AppCompatActivity {
                         pom[4] = b.get("playcount").toString();
                         b = js.getJSONObject("tags");
                         pom[5] = b.getJSONArray("tag").getJSONObject(0).getString("name");
-                        runOnUiThread(new Runnable() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 name.setText(pom[0]);
                                 urlv.setText(pom[1]);
-                                Picasso.with(context).load(pom[2]).into(icon);
+                                Picasso.with(activity.getApplicationContext()).load(pom[2]).into(icon);
                                 listeners.setText(pom[3]);
                                 playcount.setText(pom[4]);
                                 tag.setText(pom[5]);
@@ -117,7 +132,7 @@ public class ArtistDetail extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), "Artist not found", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity.getApplicationContext(), "Artist not found", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -126,12 +141,12 @@ public class ArtistDetail extends AppCompatActivity {
         });
     }
 
-    void getTracks(Context context) {
+    void getTracks(Activity activity) {
         String artist1 = artist;
         if (artist1.contains(" ")) {
             artist1.replace(" ", "+");
         }
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=" + artist1 + "&api_key=&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=" + artist1 + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")
@@ -163,10 +178,10 @@ public class ArtistDetail extends AppCompatActivity {
                             pom[4] = a.getJSONObject(0).get("#text").toString();
                             tracks_list[i] = pom;
                         }
-                        runOnUiThread(new Runnable() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                at = new AdapterTracks(context, root, tracks_list);
+                                at = new AdapterTracks(activity.getApplicationContext(), tracks_list);
                                 rv.setAdapter(at);
                             }
                         });
@@ -175,7 +190,7 @@ public class ArtistDetail extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), "Tracks not found", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity.getApplicationContext(), "Tracks not found", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

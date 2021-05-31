@@ -1,7 +1,8 @@
 package com.example.myapplication;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -17,8 +17,7 @@ import com.squareup.picasso.Picasso;
 public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHolder> {
     private final LayoutInflater layoutInflater;
     String[][] artists;
-    ConstraintLayout root;
-    Context context;
+    Activity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name, listeners, playcount;
@@ -34,10 +33,9 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
         }
     }
 
-    AdapterArtists(Context context, ConstraintLayout root, String[][] artists) {
-        layoutInflater = LayoutInflater.from(context);
-        this.root = root;
-        this.context = context;
+    AdapterArtists(Activity activity, String[][] artists) {
+        layoutInflater = LayoutInflater.from(activity.getApplicationContext());
+        this.activity = activity;
         this.artists = artists;
     }
 
@@ -55,13 +53,14 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
         holder.name.setText(artist[0]);
         holder.listeners.setText(artist[1]);
         holder.playcount.setText(artist[2]);
-        Picasso.with(context).load(artist[3]).into(holder.icon);
+        Picasso.with(activity.getApplicationContext()).load(artist[3]).into(holder.icon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, ArtistDetail.class);
-                i.putExtra("name", holder.name.getText());
-                context.startActivity(i);
+                FragmentManager fManager = activity.getFragmentManager();
+                Fragment f;
+                f = new ArtistDetailFragment(activity, holder.name.getText().toString());
+                fManager.beginTransaction().replace(R.id.container, f).commit();
             }
         });
     }
