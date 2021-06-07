@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder> {
     private final LayoutInflater layoutInflater;
-    String[][] tracks;
+    //String[][] tracks;
+    List<Track> tracks;
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -34,7 +37,7 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
         }
     }
 
-    AdapterTracks(Context context, String[][] tracks) {
+    AdapterTracks(Context context, List<Track> tracks) {
         layoutInflater = LayoutInflater.from(context);
         //this.root = root;
         this.context = context;
@@ -51,8 +54,8 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull AdapterTracks.ViewHolder holder, int position) {
-        String[] track_list = tracks[position];
-        holder.name.setText(track_list[0]);
+        Track track = tracks.get(position);
+        holder.name.setText(track);
         holder.listeners.setText(track_list[1]);
         holder.playcount.setText(track_list[2]);
         holder.artist.setText(track_list[3]);
@@ -61,6 +64,6 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
 
     @Override
     public int getItemCount() {
-        return tracks.length;
+        return tracks.size();
     }
 }

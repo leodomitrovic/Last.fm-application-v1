@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHolder> {
     private final LayoutInflater layoutInflater;
-    String[][] artists;
+    //String[][] artists;
+    List<Artist> artists;
     Activity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,7 +36,8 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
         }
     }
 
-    AdapterArtists(Activity activity, String[][] artists) {
+    //AdapterArtists(Activity activity, String[][] artists) {
+    AdapterArtists(Activity activity, List<Artist> artists) {
         layoutInflater = LayoutInflater.from(activity.getApplicationContext());
         this.activity = activity;
         this.artists = artists;
@@ -49,11 +53,11 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull AdapterArtists.ViewHolder holder, int position) {
-        String[] artist = artists[position];
-        holder.name.setText(artist[0]);
-        holder.listeners.setText(artist[1]);
-        holder.playcount.setText(artist[2]);
-        Picasso.with(activity.getApplicationContext()).load(artist[3]).into(holder.icon);
+        Artist artist = artists.get(position);
+        holder.name.setText(artist.name);
+        holder.listeners.setText(artist.listeners);
+        holder.playcount.setText(artist.playcount);
+        Picasso.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +71,6 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
 
     @Override
     public int getItemCount() {
-        return artists.length;
+        return artists.size();
     }
 }
