@@ -10,4 +10,24 @@ public class Track {
         this.playcount = playcount;
         this.artist = artist;
     }
+
+    String getName() {
+        return name;
+    }
+
+    String getListeners() {
+        return listeners;
+    }
+
+    String getIcon() {
+        return icon;
+    }
+
+    String getPlaycount() {
+        return playcount;
+    }
+
+    String getArtist() {
+        return artist;
+    }
 }

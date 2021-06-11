@@ -1,13 +1,9 @@
 package com.example.myapplication;
 
-import android.os.Handler;
-import android.os.Looper;
+
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
-
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -29,8 +25,8 @@ import okhttp3.Response;
 public class ArtistDetailRepository {
     private Artist artist;
     private static ArtistDetailRepository instance;
-    private ArrayList<Track> dataSet = new ArrayList<>();
-    String name;
+    private List<Track> dataSet = new ArrayList<>();
+    private String name;
 
     public ArtistDetailRepository(String name) {
         this.name = name;
@@ -147,6 +143,7 @@ public class ArtistDetailRepository {
                             JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
                             pom[4] = a.getJSONObject(0).get("#text").toString();
                             Track track = new Track(pom[0], pom[1], pom[4], pom[2], name);
+                            dataSet.add(track);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

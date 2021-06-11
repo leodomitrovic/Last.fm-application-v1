@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -17,10 +18,10 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder> {
-    private final LayoutInflater layoutInflater;
+    final LayoutInflater layoutInflater;
     //String[][] tracks;
     List<Track> tracks;
-    Context context;
+    Activity context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name, listeners, playcount, artist;
@@ -37,7 +38,7 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
         }
     }
 
-    AdapterTracks(Context context, List<Track> tracks) {
+    AdapterTracks(Activity context, List<Track> tracks) {
         layoutInflater = LayoutInflater.from(context);
         //this.root = root;
         this.context = context;
@@ -55,11 +56,11 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull AdapterTracks.ViewHolder holder, int position) {
         Track track = tracks.get(position);
-        holder.name.setText(track);
-        holder.listeners.setText(track_list[1]);
-        holder.playcount.setText(track_list[2]);
-        holder.artist.setText(track_list[3]);
-        Picasso.with(context).load(track_list[4]).into(holder.icon);
+        holder.name.setText(track.getName());
+        holder.listeners.setText(track.getListeners());
+        holder.playcount.setText(track.getPlaycount());
+        holder.artist.setText(track.getArtist());
+        Picasso.with(context.getApplicationContext()).load(track.getIcon()).into(holder.icon);
     }
 
     @Override

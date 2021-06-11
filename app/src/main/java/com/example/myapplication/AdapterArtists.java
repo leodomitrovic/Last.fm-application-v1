@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -17,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHolder> {
-    private final LayoutInflater layoutInflater;
+    final LayoutInflater layoutInflater;
     //String[][] artists;
     List<Artist> artists;
     Activity activity;
@@ -63,7 +64,7 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
             public void onClick(View v) {
                 FragmentManager fManager = activity.getFragmentManager();
                 Fragment f;
-                f = new ArtistDetailFragment(activity, holder.name.getText().toString());
+                f = new ArtistDetailFragment1(activity, holder.name.getText().toString());
                 fManager.beginTransaction().replace(R.id.container, f).commit();
             }
         });

@@ -26,7 +26,7 @@ import okhttp3.Response;
 
 public class TracksRepository {
     private static TracksRepository instance;
-    private ArrayList<Track> dataSet = new ArrayList<>();
+    private List<Track> dataSet = new ArrayList<>(5);
 
     public static TracksRepository getInstance(){
         if(instance == null){

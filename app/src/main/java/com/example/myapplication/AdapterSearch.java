@@ -59,7 +59,7 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
             public void onClick(View v) {
                 FragmentManager fManager = activity.getFragmentManager();
                 Fragment f;
-                f = new ArtistDetailFragment(activity, holder.name.getText().toString());
+                f = new ArtistDetailFragment1(activity, holder.name.getText().toString());
                 fManager.beginTransaction().replace(R.id.container, f).commit();
             }
         });

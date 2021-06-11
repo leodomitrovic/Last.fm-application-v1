@@ -11,11 +11,11 @@ public class ArtistDetailViewModel extends ViewModel {
     private MutableLiveData<Artist> artist;
     private ArtistDetailRepository repo;
 
-    public void init(){
+    public void init(String name){
         if(tracks != null && artist != null){
             return;
         }
-        repo = ArtistDetailRepository.getInstance("Cher");
+        repo = ArtistDetailRepository.getInstance(name);
         tracks = repo.getTracks();
         artist = repo.getData();
     }

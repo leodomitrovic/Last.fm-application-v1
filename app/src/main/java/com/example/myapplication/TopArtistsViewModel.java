@@ -11,10 +11,7 @@ public class TopArtistsViewModel extends ViewModel {
     private ArtistsRepository repo;
 
     public void init(){
-        if(artists != null){
-            return;
-        }
-        repo = ArtistsRepository.getInstance();
+        repo = new ArtistsRepository();
         artists = repo.getArtists();
     }
 

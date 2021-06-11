@@ -22,15 +22,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ArtistsRepository {
-    private static ArtistsRepository instance;
-    private ArrayList<Artist> dataSet = new ArrayList<>();
+    private static ArtistsRepository instance = null;
+    private List<Artist> dataSet = new ArrayList<>(5);
 
-    public static ArtistsRepository getInstance(){
-        if(instance == null){
-            instance = new ArtistsRepository();
-        }
-        return instance;
-    }
+    public ArtistsRepository(){ }
 
     public MutableLiveData<List<Artist>> getArtists(){
         setArtists();

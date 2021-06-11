@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import android.app.Fragment;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStore;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,11 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TopTracksFragment1#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.jetbrains.annotations.NotNull;
+
 public class TopTracksFragment1 extends Fragment {
     RecyclerView rv;
     Activity activity;
@@ -40,8 +42,23 @@ public class TopTracksFragment1 extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_top_tracks, container, false);
-        rv = view.findViewById(R.id.rv);
+        rv = view.findViewById(R.id.rv1);
         rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        initRecyclerView();
         return view;
+    }
+
+    private void initRecyclerView(){
+        model = new ViewModelProvider(this::getViewModelStore).get(TopTracksViewModel.class);
+        model.init();
+        at = new AdapterTracks(activity, model.getTracks().getValue());
+        rv.setAdapter(at);
+    }
+
+    @NonNull
+    @NotNull
+    public ViewModelStore getViewModelStore() {
+        ViewModelStore store = new ViewModelStore();
+        return store;
     }
 }
