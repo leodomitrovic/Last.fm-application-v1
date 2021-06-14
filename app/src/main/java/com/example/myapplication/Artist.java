@@ -18,4 +18,11 @@ public class Artist {
         this.urlv = urlv;
         this.tag = tag;
     }
+
+    Artist (String name, String listeners, String icon, String urlv, int a) {
+        this.name = name;
+        this.listeners = listeners;
+        this.icon = icon;
+        this.urlv = urlv;
+    }
 }

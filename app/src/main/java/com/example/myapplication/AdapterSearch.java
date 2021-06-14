@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder> {
     private final LayoutInflater layoutInflater;
-    String[][] artists;
+    List<Artist> artists;
     Activity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,7 +35,7 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
         }
     }
 
-    AdapterSearch(Activity activity, String[][] tracks) {
+    AdapterSearch(Activity activity, List<Artist> tracks) {
         layoutInflater = LayoutInflater.from(activity.getApplicationContext());
         this.activity = activity;
         this.artists = tracks;
@@ -49,11 +51,11 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull AdapterSearch.ViewHolder holder, int position) {
-        String[] track_list = artists[position];
-        holder.name.setText(track_list[0]);
-        holder.url.setText(track_list[1]);
-        holder.listeners.setText(track_list[2]);
-        Picasso.with(activity.getApplicationContext()).load(track_list[3]).into(holder.icon);
+        Artist artist = artists.get(position);
+        holder.name.setText(artist.name);
+        holder.url.setText(artist.urlv);
+        holder.listeners.setText(artist.listeners);
+        Picasso.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +69,6 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
 
     @Override
     public int getItemCount() {
-        return artists.length;
+        return artists.size();
     }
 }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
@@ -23,6 +25,7 @@ public class TopTracksFragment1 extends Fragment {
     Activity activity;
     private AdapterTracks at;
     private TopTracksViewModel model;
+    ViewDataBinding vd;
 
     public TopTracksFragment1() {
         // Required empty public constructor
@@ -45,6 +48,8 @@ public class TopTracksFragment1 extends Fragment {
         rv = view.findViewById(R.id.rv1);
         rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         initRecyclerView();
+        vd = DataBindingUtil.bind(view);
+        vd.executePendingBindings();
         return view;
     }
 

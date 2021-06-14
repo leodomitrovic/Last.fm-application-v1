@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                         fManager.beginTransaction().replace(R.id.container, f).commit();
                         return;
                     case 2:
-                        f = new SearchArtistsFragment(MainActivity.this);
+                        f = new SearchArtistsFragment1(MainActivity.this);
                         fManager.beginTransaction().replace(R.id.container, f).commit();
                 }
             }
