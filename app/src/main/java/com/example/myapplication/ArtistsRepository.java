@@ -25,9 +25,14 @@ public class ArtistsRepository {
     private static ArtistsRepository instance = null;
     private List<Artist> dataSet = new ArrayList<>(5);
 
-    public ArtistsRepository(){ }
+    public static ArtistsRepository getInstance(){
+        if(instance == null){
+            instance = new ArtistsRepository();
+        }
+        return instance;
+    }
 
-    public MutableLiveData<List<Artist>> getArtists(){
+    public MutableLiveData<List<Artist>> getArtists() {
         setArtists();
         MutableLiveData<List<Artist>> data = new MutableLiveData<>();
         data.setValue(dataSet);

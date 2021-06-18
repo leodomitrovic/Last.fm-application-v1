@@ -31,7 +31,6 @@ public class TopArtistsFragment1 extends Fragment {
     Activity activity;
     private AdapterArtists aa;
     private TopArtistsViewModel model;
-    ViewDataBinding vd;
 
     public TopArtistsFragment1() {
         // Required empty public constructor
@@ -54,23 +53,21 @@ public class TopArtistsFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.activity_top_artists, container, false);
         rv = view.findViewById(R.id.rv);
         rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        initRecyclerView();
-        vd = DataBindingUtil.bind(view);
-        vd.executePendingBindings();
+        initRecyclerView(view);
         return view;
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView(View view){
         model = new ViewModelProvider(this::getViewModelStore).get(TopArtistsViewModel.class);
         model.init();
+        aa = new AdapterArtists(activity, model.getArtists().getValue());
+        rv.setAdapter(aa);
         model.getArtists().observe(this::getLifecycle, new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
                 aa.notifyDataSetChanged();
             }
         });
-        aa = new AdapterArtists(activity, model.getArtists().getValue());
-        rv.setAdapter(aa);
     }
 
     @NonNull

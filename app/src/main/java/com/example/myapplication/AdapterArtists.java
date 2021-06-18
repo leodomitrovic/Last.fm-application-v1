@@ -68,6 +68,7 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
                 fManager.beginTransaction().replace(R.id.container, f).commit();
             }
         });
+        holder.itemView.invalidate();
     }
 
     @Override

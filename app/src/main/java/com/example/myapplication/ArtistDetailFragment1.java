@@ -29,7 +29,7 @@ public class ArtistDetailFragment1 extends Fragment {
     TextView name, listeners, playcount, urlv, tag;
     Activity activity;
     String artist_name;
-    private AdapterTracks at;
+    //private AdapterTracks at;
     private ArtistDetailViewModel model;
 
     public ArtistDetailFragment1() {
@@ -61,7 +61,7 @@ public class ArtistDetailFragment1 extends Fragment {
         model.getTracks().observe(this::getLifecycle, new Observer<List<Track>>() {
             @Override
             public void onChanged(List<Track> tracks) {
-                at.notifyDataSetChanged();
+
             }
         });
 
@@ -81,8 +81,8 @@ public class ArtistDetailFragment1 extends Fragment {
     }
 
     private void initRecyclerView(){
-        at = new AdapterTracks(activity, model.getTracks().getValue());
-        rv.setAdapter(at);
+        //at = new AdapterTracks(activity, model.getTracks().getValue());
+        //rv.setAdapter(at);
     }
 
     @NonNull

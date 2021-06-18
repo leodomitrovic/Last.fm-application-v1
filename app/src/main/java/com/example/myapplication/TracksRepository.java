@@ -82,6 +82,7 @@ public class TracksRepository {
                             Track t = new Track(pom[0], pom[1], pom[4], pom[2], pom[3]);
                             dataSet.add(t);
                         }
+                        System.out.println("Ajmo " + dataSet.size());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
