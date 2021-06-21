@@ -23,7 +23,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ArtistDetailRepository {
-    private Artist artist;
+    private Artist artist = null;
     private static ArtistDetailRepository instance;
     private List<Track> dataSet = new ArrayList<>();
     private String name;
@@ -63,7 +63,7 @@ public class ArtistDetailRepository {
         if (artist1.contains(" ")) {
             artist1.replace(" ", "+");
         }
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")

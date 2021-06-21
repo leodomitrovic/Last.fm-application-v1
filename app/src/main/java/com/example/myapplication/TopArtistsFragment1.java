@@ -6,15 +6,8 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStore;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +17,6 @@ import android.view.ViewGroup;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 
 public class TopArtistsFragment1 extends Fragment {
     RecyclerView rv;
@@ -51,23 +43,18 @@ public class TopArtistsFragment1 extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_top_artists, container, false);
-        rv = view.findViewById(R.id.rv);
-        rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        model = new ViewModelProvider(this::getViewModelStore).get(TopArtistsViewModel.class);
         initRecyclerView(view);
         return view;
     }
 
     private void initRecyclerView(View view){
-        model = new ViewModelProvider(this::getViewModelStore).get(TopArtistsViewModel.class);
         model.init();
+        while (model.getArtists().getValue().size() < 50);
         aa = new AdapterArtists(activity, model.getArtists().getValue());
+        rv = view.findViewById(R.id.rv);
+        rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         rv.setAdapter(aa);
-        model.getArtists().observe(this::getLifecycle, new Observer<List<Artist>>() {
-            @Override
-            public void onChanged(List<Artist> artists) {
-                aa.notifyDataSetChanged();
-            }
-        });
     }
 
     @NonNull
@@ -75,29 +62,5 @@ public class TopArtistsFragment1 extends Fragment {
     public ViewModelStore getViewModelStore() {
         ViewModelStore store = new ViewModelStore();
         return store;
-    }
-
-    @NonNull
-    @NotNull
-    public Lifecycle getLifecycle() {
-        Lifecycle l = new Lifecycle() {
-            @Override
-            public void addObserver(@NonNull @NotNull LifecycleObserver observer) {
-
-            }
-
-            @Override
-            public void removeObserver(@NonNull @NotNull LifecycleObserver observer) {
-
-            }
-
-            @NonNull
-            @NotNull
-            @Override
-            public State getCurrentState() {
-                return null;
-            }
-        };
-        return l;
     }
 }

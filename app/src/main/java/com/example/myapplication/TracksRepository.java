@@ -1,9 +1,6 @@
 package com.example.myapplication;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -48,7 +45,7 @@ public class TracksRepository {
                 .writeTimeout(7, TimeUnit.SECONDS)
                 .readTimeout(7, TimeUnit.SECONDS)
                 .build();
-        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")

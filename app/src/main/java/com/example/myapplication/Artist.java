@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
 public class Artist {
-    String name, listeners, playcount, urlv, tag, icon;
+    public String name, listeners, playcount, urlv, tag, icon;
 
     Artist (String name, String listeners, String icon, String playcount) {
         this.name = name;

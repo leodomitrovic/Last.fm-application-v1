@@ -16,8 +16,8 @@ public class ArtistDetailViewModel extends ViewModel {
             return;
         }
         repo = ArtistDetailRepository.getInstance(name);
-        tracks = repo.getTracks();
         artist = repo.getData();
+        tracks = repo.getTracks();
     }
 
     public LiveData<List<Track>> getTracks(){

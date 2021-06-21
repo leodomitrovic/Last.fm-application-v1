@@ -25,8 +25,8 @@
 
                 <TextView
                     android:id="@+id/textView14"
-                    android:layout_width="80dp"
-                    android:layout_height="22dp"
+                    android:layout_width="147dp"
+                    android:layout_height="21dp"
                     android:layout_marginStart="132dp"
                     android:text="@{track.artist}"
                     app:layout_constraintBottom_toBottomOf="parent"

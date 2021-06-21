@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.databinding.RecyclerviewItemTracksBinding;
 
 import java.util.List;
@@ -20,8 +22,10 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
     RecyclerviewItemTracksBinding binding;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView icon;
         public ViewHolder(View view) {
             super(view);
+            icon = view.findViewById(R.id.imageView2);
         }
     }
 
@@ -43,6 +47,7 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull AdapterTracks.ViewHolder holder, int position) {
         Track track = tracks.get(position);
+        Glide.with(context.getApplicationContext()).load(track.icon).into(holder.icon);
         binding.setTrack(track);
         binding.executePendingBindings();
     }

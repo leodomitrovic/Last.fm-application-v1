@@ -7,11 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.databinding.RecyclerviewItemSearchBinding;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,18 +21,14 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
     private final LayoutInflater layoutInflater;
     List<Artist> artists;
     Activity activity;
+    RecyclerviewItemSearchBinding binding;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView name, url, listeners;
         private final ImageView icon;
 
         public ViewHolder(View view) {
             super(view);
-
-            name = view.findViewById(R.id.textView11);
             icon = view.findViewById(R.id.imageView2);
-            url = view.findViewById(R.id.textView12);
-            listeners = view.findViewById(R.id.textView18);
         }
     }
 
@@ -46,22 +43,22 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
     public AdapterSearch.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_item_search, parent, false);
+        binding = DataBindingUtil.bind(view);
         return new AdapterSearch.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterSearch.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
-        holder.name.setText(artist.name);
-        holder.url.setText(artist.urlv);
-        holder.listeners.setText(artist.listeners);
         Picasso.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
+        binding.setArtist(artist);
+        binding.executePendingBindings();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fManager = activity.getFragmentManager();
                 Fragment f;
-                f = new ArtistDetailFragment1(activity, holder.name.getText().toString());
+                f = new ArtistDetailFragment1(activity, artist.name);
                 fManager.beginTransaction().replace(R.id.container, f).commit();
             }
         });

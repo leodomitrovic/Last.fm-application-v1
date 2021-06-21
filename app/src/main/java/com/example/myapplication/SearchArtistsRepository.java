@@ -1,13 +1,8 @@
 package com.example.myapplication;
 
-import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -48,7 +43,7 @@ public class SearchArtistsRepository {
                 .writeTimeout(7, TimeUnit.SECONDS)
                 .readTimeout(7, TimeUnit.SECONDS)
                 .build();
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + name + "&api_key=eed53ffdb78ff8f6392bba0925994e93&format=json";
+        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=" + name + "&api_key=&format=json";
 
         final Request request = new Request.Builder()
                 .url(url)
@@ -81,13 +76,6 @@ public class SearchArtistsRepository {
                             Artist artist = new Artist(pom[0], pom[2], pom[3], pom[1], 1);
                             dataSet.add(artist);
                         }
-                        /*activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                as = new AdapterSearch(activity, dataSet);
-                                rv.setAdapter(as);
-                            }
-                        });*/
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
