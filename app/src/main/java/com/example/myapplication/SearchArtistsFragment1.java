@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStore;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,10 +19,11 @@ import android.widget.ImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 
 public class SearchArtistsFragment1 extends Fragment {
     RecyclerView rv;
-    Activity activity;
     private AdapterSearch aa;
     private SearchArtistsViewModel model;
     ImageView search;
@@ -29,10 +31,6 @@ public class SearchArtistsFragment1 extends Fragment {
 
     public SearchArtistsFragment1() {
         // Required empty public constructor
-    }
-
-    public SearchArtistsFragment1 (Activity activity) {
-        this.activity = activity;
     }
 
     @Override
@@ -46,23 +44,31 @@ public class SearchArtistsFragment1 extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_search_artists, container, false);
         rv = view.findViewById(R.id.rv2);
-        rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         search = view.findViewById(R.id.imageView4);
         e = view.findViewById(R.id.editTextTextPersonName2);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initRecyclerView(e.getText().toString());
+                model = new ViewModelProvider(getActivity()).get(SearchArtistsViewModel.class);
+                model.init(e.getText().toString());
+                final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
+                    @Override
+                    public void onChanged(List<Artist> artists) {
+                        System.out.println("Observe");
+                        initRecyclerView(artists);
+                        //bind.executePendingBindings();
+                    }
+                };
+
+                model.getArtists().observe(getViewLifecycleOwner(), tracksObserver);
             }
         });
         return view;
     }
 
-    private void initRecyclerView(String name){
-        model = new ViewModelProvider(this::getViewModelStore).get(SearchArtistsViewModel.class);
-        model.init(name);
-        while (model.getArtists().getValue().size() == 0);
-        aa = new AdapterSearch(activity, model.getArtists().getValue());
+    private void initRecyclerView(List<Artist> artists){
+        aa = new AdapterSearch(getActivity(), artists);
         rv.setAdapter(aa);
     }
 

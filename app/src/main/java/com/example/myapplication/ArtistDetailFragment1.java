@@ -1,17 +1,18 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStore;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,9 +22,10 @@ import com.example.myapplication.databinding.ActivityArtistInfoBinding;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ArtistDetailFragment1 extends Fragment {
+import java.util.List;
+
+public class ArtistDetailFragment1 extends Fragment implements LifecycleOwner {
     RecyclerView rv;
-    Activity activity;
     String artist_name;
     private AdapterTracks at;
     private ArtistDetailViewModel model;
@@ -32,9 +34,8 @@ public class ArtistDetailFragment1 extends Fragment {
         // Required empty public constructor
     }
 
-    public ArtistDetailFragment1(Activity activity, String artist_name) {
-        this.activity = activity;
-        this.artist_name = artist_name;
+    public void setArguments(Bundle bundle) {
+        this.artist_name = bundle.getString("artist_name");
     }
 
     @Override
@@ -49,22 +50,29 @@ public class ArtistDetailFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.activity_artist_info, container, false);
         ActivityArtistInfoBinding binding = DataBindingUtil.bind(view);
         rv = view.findViewById(R.id.rv6);
-        rv.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
         model = new ViewModelProvider(this::getViewModelStore).get(ArtistDetailViewModel.class);
         model.init(artist_name);
 
-        while (model.getTracks().getValue().size() < 50);
-        binding.setArtis(model.getArtist().getValue());
+        final Observer<List<Track>> tracksObserver = new Observer<List<Track>>() {
+            @Override
+            public void onChanged(List<Track> tracks) {
+                initRecyclerView(tracks);
+            }
+        };
+
+        model.getTracks().observe(getViewLifecycleOwner(), tracksObserver);
+
+        /*binding.setArtis(model.getArtist().getValue());
         binding.executePendingBindings();
         view.findViewById(R.id.constraintLayout2).invalidate();
-        binding.setArtis(model.getArtist().getValue());
-        initRecyclerView();
+        binding.setArtis(model.getArtist().getValue());*/
         return view;
     }
 
-    private void initRecyclerView(){
-        at = new AdapterTracks(activity, model.getTracks().getValue());
+    private void initRecyclerView(List<Track> tracks){
+        at = new AdapterTracks(getActivity(), tracks);
         rv.setAdapter(at);
     }
 
@@ -73,5 +81,12 @@ public class ArtistDetailFragment1 extends Fragment {
     public ViewModelStore getViewModelStore() {
         ViewModelStore store = new ViewModelStore();
         return store;
+    }
+
+    @NonNull
+    @NotNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return null;
     }
 }

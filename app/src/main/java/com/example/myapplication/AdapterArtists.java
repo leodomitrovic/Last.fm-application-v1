@@ -2,8 +2,9 @@ package com.example.myapplication;
 
 import android.app.Activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,14 +56,16 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fManager = activity.getFragmentManager();
+                /*FragmentManager fManager = activity.getSu;
                 Fragment f;
-                f = new ArtistDetailFragment1(activity, artist.name);
-                fManager.beginTransaction().replace(R.id.container, f).commit();
+                f = new ArtistDetailFragment1();
+                Bundle b = new Bundle();
+                b.putString("artist_name", artist.name);
+                fManager.beginTransaction().replace(R.id.container, f).commit();*/
             }
         });
-        binding.setVariable(BR.artist, artist);
-        binding.executePendingBindings();
+        //binding.setVariable(BR.artist, artist);
+        //binding.executePendingBindings();
     }
 
     @Override

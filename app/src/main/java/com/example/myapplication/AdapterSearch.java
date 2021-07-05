@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,10 +57,13 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fManager = activity.getFragmentManager();
+                /*FragmentManager fManager = activity.getFragmentManager();
                 Fragment f;
-                f = new ArtistDetailFragment1(activity, artist.name);
-                fManager.beginTransaction().replace(R.id.container, f).commit();
+                f = new ArtistDetailFragment1();
+                Bundle b = new Bundle();
+                b.putString("artist_name", artist.name);
+                f.setArguments(b);
+                fManager.beginTransaction().replace(R.id.container, f).commit();*/
             }
         });
     }
