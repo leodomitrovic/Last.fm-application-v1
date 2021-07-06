@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TopTracksFragment1 extends Fragment implements LifecycleOwner, ViewModelStoreOwner {
+public class TopTracksFragment1 extends Fragment /*implements LifecycleOwner, ViewModelStoreOwner*/ {
     RecyclerView rv;
     private AdapterTracks at;
     private TopTracksViewModel model;
@@ -45,13 +45,11 @@ public class TopTracksFragment1 extends Fragment implements LifecycleOwner, View
         rv = view.findViewById(R.id.rv1);
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         model = new ViewModelProvider(requireActivity()).get(TopTracksViewModel.class);
-        model.init();
+        model.init(getViewLifecycleOwner());
         final Observer<List<Track>> tracksObserver = new Observer<List<Track>>() {
             @Override
             public void onChanged(List<Track> tracks) {
-                System.out.println("Observe");
                 initRecyclerView(tracks);
-                //bind.executePendingBindings();
             }
         };
 
@@ -62,38 +60,5 @@ public class TopTracksFragment1 extends Fragment implements LifecycleOwner, View
     private void initRecyclerView(List<Track> tracks){
         at = new AdapterTracks(getActivity(), tracks);
         rv.setAdapter(at);
-    }
-
-    @NonNull
-    @NotNull
-    public ViewModelStore getViewModelStore() {
-        ViewModelStore store = new ViewModelStore();
-        return store;
-    }
-
-    @NonNull
-    @NotNull
-    @Override
-    public Lifecycle getLifecycle() {
-        Lifecycle l = new Lifecycle() {
-            @Override
-            public void addObserver(@NonNull @NotNull LifecycleObserver observer) {
-
-            }
-
-            @Override
-            public void removeObserver(@NonNull @NotNull LifecycleObserver observer) {
-
-            }
-
-            @NonNull
-            @NotNull
-            @Override
-            public State getCurrentState() {
-                State s = null;
-                return s;
-            }
-        };
-        return l;
     }
 }

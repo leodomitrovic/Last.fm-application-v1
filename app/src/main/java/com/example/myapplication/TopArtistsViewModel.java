@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 public class TopArtistsViewModel extends ViewModel {
-    private MutableLiveData<List<Artist>> artists;
+    MutableLiveData<List<Artist>> artists;
     private ArtistsRepository repo;
 
     public void init(){
@@ -15,7 +15,7 @@ public class TopArtistsViewModel extends ViewModel {
             return;
         }
         repo = ArtistsRepository.getInstance();
-        artists = repo.getArtists();
+        artists = repo.setArtists();
     }
 
     public LiveData<List<Artist>> getArtists(){

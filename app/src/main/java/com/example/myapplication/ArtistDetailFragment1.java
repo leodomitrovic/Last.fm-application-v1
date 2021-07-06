@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ArtistDetailFragment1 extends Fragment implements LifecycleOwner {
+public class ArtistDetailFragment1 extends Fragment {
     RecyclerView rv;
     String artist_name;
     private AdapterTracks at;
@@ -64,9 +64,17 @@ public class ArtistDetailFragment1 extends Fragment implements LifecycleOwner {
 
         model.getTracks().observe(getViewLifecycleOwner(), tracksObserver);
 
-        /*binding.setArtis(model.getArtist().getValue());
-        binding.executePendingBindings();
-        view.findViewById(R.id.constraintLayout2).invalidate();
+        final Observer<Artist> dataObserver = new Observer<Artist>() {
+            @Override
+            public void onChanged(Artist artist) {
+                binding.setArtis(artist);
+                binding.executePendingBindings();
+            }
+        };
+
+        model.getArtist().observe(getViewLifecycleOwner(), dataObserver);
+
+        /*view.findViewById(R.id.constraintLayout2).invalidate();
         binding.setArtis(model.getArtist().getValue());*/
         return view;
     }
@@ -74,19 +82,5 @@ public class ArtistDetailFragment1 extends Fragment implements LifecycleOwner {
     private void initRecyclerView(List<Track> tracks){
         at = new AdapterTracks(getActivity(), tracks);
         rv.setAdapter(at);
-    }
-
-    @NonNull
-    @NotNull
-    public ViewModelStore getViewModelStore() {
-        ViewModelStore store = new ViewModelStore();
-        return store;
-    }
-
-    @NonNull
-    @NotNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return null;
     }
 }

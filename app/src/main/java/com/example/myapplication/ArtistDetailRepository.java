@@ -39,21 +39,8 @@ public class ArtistDetailRepository {
         return instance;
     }
 
-    public MutableLiveData<Artist> getData(){
-        setData();
+    public MutableLiveData<Artist> setData() {
         MutableLiveData<Artist> data = new MutableLiveData<>();
-        data.setValue(artist);
-        return data;
-    }
-
-    public MutableLiveData<List<Track>> getTracks(){
-        setTracks();
-        MutableLiveData<List<Track>> data = new MutableLiveData<>();
-        data.setValue(dataSet);
-        return data;
-    }
-
-    void setData() {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .writeTimeout(7, TimeUnit.SECONDS)
@@ -73,6 +60,7 @@ public class ArtistDetailRepository {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d("pogreska", e.getMessage());
+                data.postValue(null);
             }
 
             @Override
@@ -97,12 +85,15 @@ public class ArtistDetailRepository {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    data.postValue(artist);
                 }
             }
         });
+        return data;
     }
 
-    void setTracks() {
+    public MutableLiveData<List<Track>> setTracks() {
+        MutableLiveData<List<Track>> data = new MutableLiveData<>();
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .writeTimeout(7, TimeUnit.SECONDS)
@@ -122,6 +113,7 @@ public class ArtistDetailRepository {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d("pogreska", e.getMessage());
+                data.postValue(null);
             }
 
             @Override
@@ -145,11 +137,13 @@ public class ArtistDetailRepository {
                             Track track = new Track(pom[0], pom[1], pom[4], pom[2], name);
                             dataSet.add(track);
                         }
+                        data.postValue(dataSet);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+        return data;
     }
 }

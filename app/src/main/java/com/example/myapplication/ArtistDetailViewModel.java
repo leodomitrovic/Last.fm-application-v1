@@ -12,12 +12,12 @@ public class ArtistDetailViewModel extends ViewModel {
     private ArtistDetailRepository repo;
 
     public void init(String name){
-        if(tracks != null && artist != null){
+        /*if(tracks != null && artist != null){
             return;
-        }
+        }*/
         repo = ArtistDetailRepository.getInstance(name);
-        artist = repo.getData();
-        tracks = repo.getTracks();
+        artist = repo.setData();
+        tracks = repo.setTracks();
     }
 
     public LiveData<List<Track>> getTracks(){

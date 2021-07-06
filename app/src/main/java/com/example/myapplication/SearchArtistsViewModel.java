@@ -11,8 +11,8 @@ public class SearchArtistsViewModel extends ViewModel {
     private SearchArtistsRepository repo;
 
     public void init(String name){
-        repo = new SearchArtistsRepository(name);
-        artists = repo.getArtists();
+        repo = new SearchArtistsRepository();
+        artists = repo.setArtists(name);
     }
 
     public LiveData<List<Artist>> getArtists(){

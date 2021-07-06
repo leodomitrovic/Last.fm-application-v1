@@ -1,8 +1,13 @@
 package com.example.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.myapplication.databinding.ActivityTopArtistsBinding;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -23,7 +28,7 @@ import okhttp3.Response;
 
 public class ArtistsRepository {
     private static ArtistsRepository instance = null;
-    private List<Artist> dataSet = new ArrayList<>(5);
+    private List<Artist> dataSet = new ArrayList<>();
 
     public static ArtistsRepository getInstance(){
         if(instance == null){
@@ -32,14 +37,8 @@ public class ArtistsRepository {
         return instance;
     }
 
-    public MutableLiveData<List<Artist>> getArtists() {
-        setArtists();
+    public MutableLiveData<List<Artist>> setArtists() {
         MutableLiveData<List<Artist>> data = new MutableLiveData<>();
-        data.setValue(dataSet);
-        return data;
-    }
-
-    private void setArtists() {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .writeTimeout(7, TimeUnit.SECONDS)
@@ -56,11 +55,12 @@ public class ArtistsRepository {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d("pogreska", e.getMessage());
+                data.postValue(null);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
                     String artists = Objects.requireNonNull(response.body()).string();
                     try {
                         JSONArray o;
@@ -78,11 +78,13 @@ public class ArtistsRepository {
                             Artist a = new Artist(pom[0], pom[1], pom[3], pom[2]);
                             dataSet.add(a);
                         }
+                        data.postValue(dataSet);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+        return data;
     }
 }

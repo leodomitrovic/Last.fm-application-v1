@@ -47,17 +47,16 @@ public class SearchArtistsFragment1 extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         search = view.findViewById(R.id.imageView4);
         e = view.findViewById(R.id.editTextTextPersonName2);
+        model = new ViewModelProvider(getActivity()).get(SearchArtistsViewModel.class);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                model = new ViewModelProvider(getActivity()).get(SearchArtistsViewModel.class);
                 model.init(e.getText().toString());
                 final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
                     @Override
                     public void onChanged(List<Artist> artists) {
-                        System.out.println("Observe");
                         initRecyclerView(artists);
-                        //bind.executePendingBindings();
+
                     }
                 };
 
@@ -70,12 +69,5 @@ public class SearchArtistsFragment1 extends Fragment {
     private void initRecyclerView(List<Artist> artists){
         aa = new AdapterSearch(getActivity(), artists);
         rv.setAdapter(aa);
-    }
-
-    @NonNull
-    @NotNull
-    public ViewModelStore getViewModelStore() {
-        ViewModelStore store = new ViewModelStore();
-        return store;
     }
 }

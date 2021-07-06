@@ -1,5 +1,9 @@
 package com.example.myapplication;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;

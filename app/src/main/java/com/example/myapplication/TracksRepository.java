@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -23,7 +26,7 @@ import okhttp3.Response;
 
 public class TracksRepository {
     private static TracksRepository instance;
-    private List<Track> dataSet = new ArrayList<>(5);
+    private List<Track> dataSet = new ArrayList<>();
 
     public static TracksRepository getInstance(){
         if(instance == null){
@@ -32,20 +35,15 @@ public class TracksRepository {
         return instance;
     }
 
-    public MutableLiveData<List<Track>> getTracks(){
-        setTracks();
+    public MutableLiveData<List<Track>> setTracks() {
         MutableLiveData<List<Track>> data = new MutableLiveData<>();
-        data.setValue(dataSet);
-        return data;
-    }
-
-    void setTracks() {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .writeTimeout(7, TimeUnit.SECONDS)
                 .readTimeout(7, TimeUnit.SECONDS)
                 .build();
         String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=&format=json";
+
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")
@@ -55,6 +53,7 @@ public class TracksRepository {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d("pogreska", e.getMessage());
+                data.postValue(null);
             }
 
             @Override
@@ -79,12 +78,13 @@ public class TracksRepository {
                             Track t = new Track(pom[0], pom[1], pom[4], pom[2], pom[3]);
                             dataSet.add(t);
                         }
-                        System.out.println("Ajmo " + dataSet.size());
+                        data.postValue(dataSet);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+        return data;
     }
 }

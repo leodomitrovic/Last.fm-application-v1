@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 
-public class TopArtistsFragment1 extends Fragment implements LifecycleOwner, ViewModelStoreOwner {
+public class TopArtistsFragment1 extends Fragment {
     RecyclerView rv;
     private AdapterArtists aa;
     private TopArtistsViewModel model;
@@ -48,15 +48,13 @@ public class TopArtistsFragment1 extends Fragment implements LifecycleOwner, Vie
         rv = view.findViewById(R.id.rv);
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         ActivityTopArtistsBinding bind = DataBindingUtil.bind(view);
-        model = new ViewModelProvider(getActivity()).get(TopArtistsViewModel.class);
+        model = new ViewModelProvider(requireActivity()).get(TopArtistsViewModel.class);
         model.init();
 
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
-                System.out.println("Observe");
                 initRecyclerView(artists);
-                //bind.executePendingBindings();
             }
         };
 
@@ -65,41 +63,7 @@ public class TopArtistsFragment1 extends Fragment implements LifecycleOwner, Vie
     }
 
     private void initRecyclerView(List<Artist> artists) {
-        aa = new AdapterArtists(getActivity(), artists);
+        aa = new AdapterArtists(getActivity(), artists, getActivity().getSupportFragmentManager());
         rv.setAdapter(aa);
-
-    }
-
-    @NonNull
-    @NotNull
-    public ViewModelStore getViewModelStore() {
-        ViewModelStore store = new ViewModelStore();
-        return store;
-    }
-
-    @NonNull
-    @NotNull
-    @Override
-    public Lifecycle getLifecycle() {
-        Lifecycle l = new Lifecycle() {
-            @Override
-            public void addObserver(@NonNull @NotNull LifecycleObserver observer) {
-
-            }
-
-            @Override
-            public void removeObserver(@NonNull @NotNull LifecycleObserver observer) {
-
-            }
-
-            @NonNull
-            @NotNull
-            @Override
-            public State getCurrentState() {
-                State s = null;
-                return s;
-            }
-        };
-        return l;
     }
 }

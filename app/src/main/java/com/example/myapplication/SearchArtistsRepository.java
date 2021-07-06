@@ -22,22 +22,18 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class SearchArtistsRepository {
-    private static ArtistsRepository instance = null;
-    private List<Artist> dataSet = new ArrayList<>(5);
-    String name;
+    private static SearchArtistsRepository instance = null;
+    private List<Artist> dataSet = new ArrayList<>();
 
-    public SearchArtistsRepository(String name){
-        this.name = name;
+    public static SearchArtistsRepository getInstance(){
+        if(instance == null){
+            instance = new SearchArtistsRepository();
+        }
+        return instance;
     }
 
-    public MutableLiveData<List<Artist>> getArtists(){
-        setArtists();
+    public MutableLiveData<List<Artist>> setArtists(String name) {
         MutableLiveData<List<Artist>> data = new MutableLiveData<>();
-        data.setValue(dataSet);
-        return data;
-    }
-
-    public void setArtists() {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .writeTimeout(7, TimeUnit.SECONDS)
@@ -54,6 +50,7 @@ public class SearchArtistsRepository {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d("pogreska", e.getMessage());
+                data.postValue(null);
             }
 
             @Override
@@ -76,11 +73,13 @@ public class SearchArtistsRepository {
                             Artist artist = new Artist(pom[0], pom[2], pom[3], pom[1], 1);
                             dataSet.add(artist);
                         }
+                        data.postValue(dataSet);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+        return data;
     }
 }
