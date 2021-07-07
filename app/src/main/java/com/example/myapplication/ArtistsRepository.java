@@ -1,13 +1,8 @@
 package com.example.myapplication;
 
-import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.example.myapplication.databinding.ActivityTopArtistsBinding;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;

@@ -12,7 +12,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="413dp"
-            android:layout_height="122dp"
+            android:layout_height="120dp"
             android:paddingBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.846" />
+                    app:layout_constraintVertical_bias="0.935" />
 
                 <TextView
                     android:id="@+id/textView12"
@@ -44,7 +44,8 @@
                     android:text="@{artist.listeners}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.671" />
 
                 <TextView
                     android:id="@+id/textView9"
@@ -55,7 +56,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.836" />
+                    app:layout_constraintVertical_bias="0.935" />
 
                 <TextView
                     android:id="@+id/textView8"
@@ -65,7 +66,8 @@
                     android:text="@string/listeners"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.671" />
 
                 <TextView
                     android:id="@+id/textView7"
@@ -85,14 +87,14 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="28dp"
                     android:contentDescription="@string/artist_icon"
+                    android:src="@{artist.icon}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:src="@{artist.icon}" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView11"
-                    android:layout_width="147dp"
-                    android:layout_height="20dp"
+                    android:layout_width="142dp"
+                    android:layout_height="42dp"
                     android:layout_marginStart="132dp"
                     android:text="@{artist.name}"
                     app:layout_constraintBottom_toBottomOf="parent"

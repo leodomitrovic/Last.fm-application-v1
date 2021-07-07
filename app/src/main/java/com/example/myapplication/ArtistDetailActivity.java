@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.databinding.ActivityArtistInfoBinding;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
     String artist_name;
     private AdapterTracks at;
     private ArtistDetailViewModel model;
+    ImageView i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
         System.out.println(artist_name);
         ActivityArtistInfoBinding binding = DataBindingUtil.bind(findViewById(R.id.root5));
         rv = findViewById(R.id.rv6);
+        i = findViewById(R.id.imageView3);
         rv.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
         model = new ViewModelProvider(this::getViewModelStore).get(ArtistDetailViewModel.class);
@@ -43,6 +47,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(Artist artist) {
                 binding.setArtis(artist);
+                Glide.with(getApplicationContext()).load(artist.icon).into(i);
                 binding.executePendingBindings();
             }
         };

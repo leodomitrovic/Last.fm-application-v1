@@ -33,9 +33,7 @@ public class ArtistDetailRepository {
     }
 
     public static ArtistDetailRepository getInstance(String name){
-        if(instance == null){
-            instance = new ArtistDetailRepository(name);
-        }
+        instance = new ArtistDetailRepository(name);
         return instance;
     }
 

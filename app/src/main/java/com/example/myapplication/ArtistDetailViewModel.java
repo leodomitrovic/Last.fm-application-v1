@@ -12,9 +12,6 @@ public class ArtistDetailViewModel extends ViewModel {
     private ArtistDetailRepository repo;
 
     public void init(String name){
-        /*if(tracks != null && artist != null){
-            return;
-        }*/
         repo = ArtistDetailRepository.getInstance(name);
         artist = repo.setData();
         tracks = repo.setTracks();

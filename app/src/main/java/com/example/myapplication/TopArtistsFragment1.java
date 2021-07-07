@@ -2,26 +2,16 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStore;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.myapplication.databinding.ActivityTopArtistsBinding;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -47,7 +37,6 @@ public class TopArtistsFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.activity_top_artists, container, false);
         rv = view.findViewById(R.id.rv);
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        ActivityTopArtistsBinding bind = DataBindingUtil.bind(view);
         model = new ViewModelProvider(requireActivity()).get(TopArtistsViewModel.class);
         model.init();
 

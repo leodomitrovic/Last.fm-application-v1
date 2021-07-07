@@ -81,8 +81,8 @@
 
                 <TextView
                     android:id="@+id/textView11"
-                    android:layout_width="80dp"
-                    android:layout_height="22dp"
+                    android:layout_width="131dp"
+                    android:layout_height="36dp"
                     android:layout_marginStart="132dp"
                     android:text="@{artist.name}"
                     app:layout_constraintBottom_toBottomOf="parent"
