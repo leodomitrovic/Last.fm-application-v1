@@ -53,9 +53,10 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
     @Override
     public void onBindViewHolder(@NonNull AdapterArtists.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
-        binding.setArtist(artist);
-        binding.executePendingBindings();
+        System.out.println(artist.icon);
         Glide.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
+        binding.setArtist(artist);
+        //binding.executePendingBindings();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,5 +68,10 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
     @Override
     public int getItemCount() {
         return artists.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

@@ -1,16 +1,19 @@
 package com.example.myapplication;
 
-public class Artist {
-    public String name, listeners, playcount, urlv, tag, icon;
+import android.net.Uri;
 
-    Artist (String name, String listeners, String icon, String playcount) {
+public class Artist {
+    public String name, listeners, playcount, urlv, tag;
+    Uri icon;
+
+    Artist (String name, String listeners, Uri icon, String playcount) {
         this.name = name;
         this.listeners = listeners;
         this.icon = icon;
         this.playcount = playcount;
     }
 
-    Artist (String name, String listeners, String icon, String playcount, String urlv, String tag) {
+    Artist (String name, String listeners, Uri icon, String playcount, String urlv, String tag) {
         this.name = name;
         this.listeners = listeners;
         this.icon = icon;
@@ -19,7 +22,7 @@ public class Artist {
         this.tag = tag;
     }
 
-    Artist (String name, String listeners, String icon, String urlv, int a) {
+    Artist (String name, String listeners, Uri icon, String urlv, int a) {
         this.name = name;
         this.listeners = listeners;
         this.icon = icon;

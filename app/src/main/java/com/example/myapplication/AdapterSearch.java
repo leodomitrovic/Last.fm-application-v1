@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.databinding.RecyclerviewItemSearchBinding;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull AdapterSearch.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
-        Picasso.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
+        Glide.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
         binding.setArtist(artist);
         binding.executePendingBindings();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -63,5 +63,10 @@ public class AdapterSearch extends RecyclerView.Adapter<AdapterSearch.ViewHolder
     @Override
     public int getItemCount() {
         return artists.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

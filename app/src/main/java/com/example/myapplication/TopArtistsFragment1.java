@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -43,6 +42,7 @@ public class TopArtistsFragment1 extends Fragment {
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
+                System.out.println("Observe " + artists.size());
                 initRecyclerView(artists);
             }
         };

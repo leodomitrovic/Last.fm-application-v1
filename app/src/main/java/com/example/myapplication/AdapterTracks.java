@@ -56,4 +56,9 @@ public class AdapterTracks extends RecyclerView.Adapter<AdapterTracks.ViewHolder
     public int getItemCount() {
         return tracks.size();
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

@@ -33,7 +33,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
         i = findViewById(R.id.imageView3);
         rv.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
-        model = new ViewModelProvider(this::getViewModelStore).get(ArtistDetailViewModel.class);
+        model = new ViewModelProvider(this).get(ArtistDetailViewModel.class);
         model.init(artist_name);
 
         final Observer<List<Track>> tracksObserver = new Observer<List<Track>>() {

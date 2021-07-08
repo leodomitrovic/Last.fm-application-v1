@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -70,7 +71,7 @@ public class ArtistsRepository {
                             pom[2] = o.getJSONObject(i).get("playcount").toString();
                             JSONArray p = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
                             pom[3] = p.getJSONObject(0).get("#text").toString();
-                            Artist a = new Artist(pom[0], pom[1], pom[3], pom[2]);
+                            Artist a = new Artist(pom[0], pom[1], Uri.parse(pom[3]), pom[2]);
                             dataSet.add(a);
                         }
                         data.postValue(dataSet);

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -79,7 +80,7 @@ public class ArtistDetailRepository {
                         pom[4] = b.get("playcount").toString();
                         b = js.getJSONObject("tags");
                         pom[5] = b.getJSONArray("tag").getJSONObject(0).getString("name");
-                        artist = new Artist(pom[0], pom[3], pom[2], pom[4], pom[1], pom[5]);
+                        artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
