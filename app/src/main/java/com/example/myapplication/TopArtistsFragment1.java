@@ -42,11 +42,9 @@ public class TopArtistsFragment1 extends Fragment {
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
-                System.out.println("Observe " + artists.size());
                 initRecyclerView(artists);
             }
         };
-
         model.getArtists().observe(getViewLifecycleOwner(), tracksObserver);
         return view;
     }

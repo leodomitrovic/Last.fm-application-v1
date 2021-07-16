@@ -1,9 +1,18 @@
 package com.example.myapplication;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.SearchView;
 
 import androidx.lifecycle.MutableLiveData;
+
+import com.google.gson.JsonObject;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.BaseJsonHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -16,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import cz.msebera.android.httpclient.Header;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -35,6 +45,7 @@ public class ArtistsRepository {
 
     public MutableLiveData<List<Artist>> setArtists() {
         MutableLiveData<List<Artist>> data = new MutableLiveData<>();
+
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
                 .writeTimeout(7, TimeUnit.SECONDS)
@@ -73,6 +84,44 @@ public class ArtistsRepository {
                             pom[3] = p.getJSONObject(0).get("#text").toString();
                             Artist a = new Artist(pom[0], pom[1], Uri.parse(pom[3]), pom[2]);
                             dataSet.add(a);
+                        }
+                        for (int i = 0; i < 1; i++) {
+                            String artist1 = dataSet.get(i).name;
+                            final int index = i;
+                            if (artist1.contains(" ")) {
+                                artist1.replace(" ", "%20");
+                            }
+                            OkHttpClient client1 = new OkHttpClient();
+                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20face&pageNumber=1&pageSize=1&autoCorrect=true";
+                            Request request1 = new Request.Builder()
+                                    .url(url1)
+                                    .get()
+                                    .addHeader("x-rapidapi-key", "182fbdace7msh03e6f1542634778p17c69ajsna8742b160d85")
+                                    .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                    .build();
+                            client1.newCall(request1).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                    System.out.println("Failure");
+                                    //data.postValue(dataSet);
+                                }
+
+                                @Override
+                                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+                                        String artist = Objects.requireNonNull(response.body()).string();
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(artist);
+                                            JSONArray o = jsonObject.getJSONArray("value");
+                                            String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                            dataSet.get(index).icon = Uri.parse(thumbnail);
+                                            System.out.println("Ajmo");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
                         }
                         data.postValue(dataSet);
                     } catch (JSONException e) {

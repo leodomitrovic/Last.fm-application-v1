@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -53,10 +54,9 @@ public class AdapterArtists extends RecyclerView.Adapter<AdapterArtists.ViewHold
     @Override
     public void onBindViewHolder(@NonNull AdapterArtists.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
-        System.out.println(artist.icon);
         Glide.with(activity.getApplicationContext()).load(artist.icon).into(holder.icon);
         binding.setArtist(artist);
-        //binding.executePendingBindings();
+        binding.executePendingBindings();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
