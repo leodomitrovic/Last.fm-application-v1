@@ -96,7 +96,7 @@ public class ArtistsRepository {
                             Request request1 = new Request.Builder()
                                     .url(url1)
                                     .get()
-                                    .addHeader("x-rapidapi-key", "182fbdace7msh03e6f1542634778p17c69ajsna8742b160d85")
+                                    .addHeader("x-rapidapi-key", "")
                                     .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
                                     .build();
                             client1.newCall(request1).enqueue(new Callback() {
