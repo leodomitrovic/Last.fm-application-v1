@@ -1,10 +1,12 @@
 package com.example.myapplication;
 
 
+import android.app.Application;
 import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -25,20 +27,14 @@ import okhttp3.Response;
 
 public class ArtistDetailRepository {
     private Artist artist = null;
-    private static ArtistDetailRepository instance;
     private List<Track> dataSet = new ArrayList<>();
-    private String name;
+    AppDatabase db;
 
-    public ArtistDetailRepository(String name) {
-        this.name = name;
+    public ArtistDetailRepository(Application app) {
+        db = Room.databaseBuilder(app, AppDatabase.class, "images").build();
     }
 
-    public static ArtistDetailRepository getInstance(String name){
-        instance = new ArtistDetailRepository(name);
-        return instance;
-    }
-
-    public MutableLiveData<Artist> setData() {
+    public MutableLiveData<Artist> setData(String name) {
         MutableLiveData<Artist> data = new MutableLiveData<>();
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
@@ -81,6 +77,54 @@ public class ArtistDetailRepository {
                         b = js.getJSONObject("tags");
                         pom[5] = b.getJSONArray("tag").getJSONObject(0).getString("name");
                         artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                        data.postValue(artist);
+                        String artist1 = name;
+                        if (artist1.contains(" ")) {
+                            artist1.replace(" ", "%20");
+                        }
+                        ArtistEntity ae = db.artistDao().findByName(artist1);
+                        if (ae != null) {
+                            pom[2] = ae.image;
+                            artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                            data.postValue(artist);
+                            return;
+                        }
+                        OkHttpClient client1 = new OkHttpClient();
+                        String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20artist%20face&pageNumber=1&pageSize=1&safeSearch=true";
+                        Request request1 = new Request.Builder()
+                                .url(url1)
+                                .get()
+                                .addHeader("x-rapidapi-key", "")
+                                .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                .build();
+                        client1.newCall(request1).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                System.out.println("Failure");
+                                //data.postValue(dataSet);
+                            }
+
+                            @Override
+                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                if (response.isSuccessful()) {
+                                    String artist2 = Objects.requireNonNull(response.body()).string();
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(artist2);
+                                        JSONArray o = jsonObject.getJSONArray("value");
+                                        String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                        pom[2] = thumbnail;
+                                        ArtistEntity novi = new ArtistEntity();
+                                        novi.artist_name = artist1;
+                                        novi.image = thumbnail;
+                                        db.artistDao().insertAll(novi);
+                                        artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                                        data.postValue(artist);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -91,7 +135,7 @@ public class ArtistDetailRepository {
         return data;
     }
 
-    public MutableLiveData<List<Track>> setTracks() {
+    public MutableLiveData<List<Track>> setTracks(String name) {
         MutableLiveData<List<Track>> data = new MutableLiveData<>();
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
@@ -133,7 +177,7 @@ public class ArtistDetailRepository {
                             pom[3] = name;
                             JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
                             pom[4] = a.getJSONObject(0).get("#text").toString();
-                            Track track = new Track(pom[0], pom[1], pom[4], pom[2], name);
+                            Track track = new Track(pom[0], pom[1], Uri.parse(pom[4]), pom[2], name);
                             dataSet.add(track);
                         }
                         data.postValue(dataSet);

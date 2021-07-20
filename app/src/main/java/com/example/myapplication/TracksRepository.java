@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.net.Uri;
 import android.util.Log;
 import android.widget.SearchView;
 
@@ -73,7 +74,7 @@ public class TracksRepository {
                             pom[3] = b.get("name").toString();
                             JSONArray a = o.getJSONObject(o.getJSONObject(i).length()).getJSONArray("image");
                             pom[4] = a.getJSONObject(0).get("#text").toString();
-                            Track t = new Track(pom[0], pom[1], pom[4], pom[2], pom[3]);
+                            Track t = new Track(pom[0], pom[1], Uri.parse(pom[4]), pom[2], pom[3]);
                             dataSet.add(t);
                         }
                         data.postValue(dataSet);

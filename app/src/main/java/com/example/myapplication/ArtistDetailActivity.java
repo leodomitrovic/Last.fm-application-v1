@@ -27,7 +27,6 @@ public class ArtistDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_info);
         artist_name = getIntent().getStringExtra("name");
-        System.out.println(artist_name);
         ActivityArtistInfoBinding binding = DataBindingUtil.bind(findViewById(R.id.root5));
         rv = findViewById(R.id.rv6);
         i = findViewById(R.id.imageView3);

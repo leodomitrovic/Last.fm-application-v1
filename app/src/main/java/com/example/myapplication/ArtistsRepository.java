@@ -1,12 +1,16 @@
 package com.example.myapplication;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.SystemClock;
+import android.text.style.ScaleXSpan;
 import android.util.Log;
 import android.widget.SearchView;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 
 import com.google.gson.JsonObject;
 import com.loopj.android.http.AsyncHttpClient;
@@ -26,8 +30,11 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import cz.msebera.android.httpclient.Header;
+import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dispatcher;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -35,12 +42,10 @@ import okhttp3.Response;
 public class ArtistsRepository {
     private static ArtistsRepository instance = null;
     private List<Artist> dataSet = new ArrayList<>();
+    AppDatabase db;
 
-    public static ArtistsRepository getInstance(){
-        if(instance == null){
-            instance = new ArtistsRepository();
-        }
-        return instance;
+    public ArtistsRepository(Application app){
+        db = Room.databaseBuilder(app, AppDatabase.class, "images").build();
     }
 
     public MutableLiveData<List<Artist>> setArtists() {
@@ -85,14 +90,37 @@ public class ArtistsRepository {
                             Artist a = new Artist(pom[0], pom[1], Uri.parse(pom[3]), pom[2]);
                             dataSet.add(a);
                         }
-                        for (int i = 0; i < 1; i++) {
+                        data.postValue(dataSet);
+                        for (int i = 0; i < dataSet.size(); i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
                             if (artist1.contains(" ")) {
                                 artist1.replace(" ", "%20");
                             }
-                            OkHttpClient client1 = new OkHttpClient();
-                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20face&pageNumber=1&pageSize=1&autoCorrect=true";
+                            ArtistEntity ae = db.artistDao().findByName(artist1);
+                            if (ae != null) {
+                                dataSet.get(i).icon = Uri.parse(ae.image);
+                                data.postValue(dataSet);
+                                continue;
+                            }
+
+                            Dispatcher dispatcher = new Dispatcher();
+                            dispatcher.setMaxRequests(1);
+
+                            Interceptor interceptor = new Interceptor() {
+                                @Override
+                                public Response intercept(Chain chain) throws IOException {
+                                    SystemClock.sleep(2000);
+                                    return chain.proceed(chain.request());
+                                }
+                            };
+
+                            OkHttpClient client1 = new OkHttpClient.Builder()
+                                    .addNetworkInterceptor(interceptor)
+                                    .dispatcher(dispatcher)
+                                    .build();
+
+                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20artist%20face&pageNumber=1&pageSize=2&autoCorrect=true&safeSearch=true";
                             Request request1 = new Request.Builder()
                                     .url(url1)
                                     .get()
@@ -103,19 +131,24 @@ public class ArtistsRepository {
                                 @Override
                                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                                     System.out.println("Failure");
-                                    //data.postValue(dataSet);
+                                    data.postValue(dataSet);
                                 }
 
                                 @Override
                                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                     if (response.isSuccessful()) {
                                         String artist = Objects.requireNonNull(response.body()).string();
+                                        System.out.println("Ajmo " + artist);
                                         try {
                                             JSONObject jsonObject = new JSONObject(artist);
                                             JSONArray o = jsonObject.getJSONArray("value");
-                                            String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                            String thumbnail = o.getJSONObject(1).getString("url");
                                             dataSet.get(index).icon = Uri.parse(thumbnail);
-                                            System.out.println("Ajmo");
+                                            ArtistEntity novi = new ArtistEntity();
+                                            novi.artist_name = artist1;
+                                            novi.image = thumbnail;
+                                            db.artistDao().insertAll(novi);
+                                            data.postValue(dataSet);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -123,7 +156,6 @@ public class ArtistsRepository {
                                 }
                             });
                         }
-                        data.postValue(dataSet);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -42,6 +42,11 @@ public class TopArtistsFragment1 extends Fragment {
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
+                if (aa != null) {
+                    aa.artists = artists;
+                    aa.notifyDataSetChanged();
+                    return;
+                }
                 initRecyclerView(artists);
             }
         };

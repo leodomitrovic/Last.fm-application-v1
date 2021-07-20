@@ -1,9 +1,12 @@
 package com.example.myapplication;
 
+import android.app.Application;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -18,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dispatcher;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -25,12 +30,11 @@ import okhttp3.Response;
 public class SearchArtistsRepository {
     private static SearchArtistsRepository instance = null;
     private List<Artist> dataSet = new ArrayList<>();
+    AppDatabase db;
 
-    public static SearchArtistsRepository getInstance(){
-        if(instance == null){
-            instance = new SearchArtistsRepository();
-        }
-        return instance;
+
+    public SearchArtistsRepository(Application app){
+        db = Room.databaseBuilder(app, AppDatabase.class, "images").build();
     }
 
     public MutableLiveData<List<Artist>> setArtists(String name) {
@@ -71,11 +75,72 @@ public class SearchArtistsRepository {
                             pom[2] = a.getJSONObject(i).get("listeners").toString();
                             JSONArray b = a.getJSONObject(i).getJSONArray("image");
                             pom[3] = b.getJSONObject(0).get("#text").toString();
-                            System.out.println(pom[3]);
                             Artist artist = new Artist(pom[0], pom[2], Uri.parse(pom[3]), pom[1], 1);
                             dataSet.add(artist);
                         }
                         data.postValue(dataSet);
+                        for (int i = 0; i < dataSet.size() - 25; i++) {
+                            String artist1 = dataSet.get(i).name;
+                            final int index = i;
+                            if (artist1.contains(" ")) {
+                                artist1.replace(" ", "%20");
+                            }
+                            ArtistEntity ae = db.artistDao().findByName(artist1);
+                            if (ae != null) {
+                                dataSet.get(i).icon = Uri.parse(ae.image);
+                                data.postValue(dataSet);
+                                continue;
+                            }
+                            Dispatcher dispatcher = new Dispatcher();
+                            dispatcher.setMaxRequests(1);
+
+                            Interceptor interceptor = new Interceptor() {
+                                @Override
+                                public Response intercept(Chain chain) throws IOException {
+                                    SystemClock.sleep(2000);
+                                    return chain.proceed(chain.request());
+                                }
+                            };
+
+                            OkHttpClient client1 = new OkHttpClient.Builder()
+                                    .addNetworkInterceptor(interceptor)
+                                    .dispatcher(dispatcher)
+                                    .build();
+                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20face&pageNumber=1&pageSize=1&autoCorrect=true";
+                            Request request1 = new Request.Builder()
+                                    .url(url1)
+                                    .get()
+                                    .addHeader("x-rapidapi-key", "")
+                                    .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                    .build();
+                            client1.newCall(request1).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                    System.out.println("Failure");
+                                    //data.postValue(dataSet);
+                                }
+
+                                @Override
+                                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+                                        String artist = Objects.requireNonNull(response.body()).string();
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(artist);
+                                            JSONArray o = jsonObject.getJSONArray("value");
+                                            String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                            dataSet.get(index).icon = Uri.parse(thumbnail);
+                                            ArtistEntity novi = new ArtistEntity();
+                                            novi.artist_name = artist1;
+                                            novi.image = thumbnail;
+                                            db.artistDao().insertAll(novi);
+                                            data.postValue(dataSet);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

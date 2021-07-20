@@ -44,7 +44,6 @@ public class SearchArtistsFragment1 extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         search = view.findViewById(R.id.imageView4);
         e = view.findViewById(R.id.editTextTextPersonName2);
-        model = new ViewModelProvider(getActivity()).get(SearchArtistsViewModel.class);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,10 +63,17 @@ public class SearchArtistsFragment1 extends Fragment {
     }
 
     private void perform() {
+        model = new ViewModelProvider(getActivity()).get(SearchArtistsViewModel.class);
         model.init(e.getText().toString());
+        aa = null;
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
+                if (aa != null) {
+                    aa.artists = artists;
+                    aa.notifyDataSetChanged();
+                    return;
+                }
                 initRecyclerView(artists);
 
             }
