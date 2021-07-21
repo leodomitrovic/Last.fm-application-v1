@@ -28,10 +28,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class SearchArtistsRepository {
-    private static SearchArtistsRepository instance = null;
     private List<Artist> dataSet = new ArrayList<>();
     AppDatabase db;
-
 
     public SearchArtistsRepository(Application app){
         db = Room.databaseBuilder(app, AppDatabase.class, "images").build();
@@ -91,21 +89,8 @@ public class SearchArtistsRepository {
                                 data.postValue(dataSet);
                                 continue;
                             }
-                            Dispatcher dispatcher = new Dispatcher();
-                            dispatcher.setMaxRequests(1);
 
-                            Interceptor interceptor = new Interceptor() {
-                                @Override
-                                public Response intercept(Chain chain) throws IOException {
-                                    SystemClock.sleep(2000);
-                                    return chain.proceed(chain.request());
-                                }
-                            };
-
-                            OkHttpClient client1 = new OkHttpClient.Builder()
-                                    .addNetworkInterceptor(interceptor)
-                                    .dispatcher(dispatcher)
-                                    .build();
+                            OkHttpClient client1 = new OkHttpClient();
                             String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20face&pageNumber=1&pageSize=1&autoCorrect=true";
                             Request request1 = new Request.Builder()
                                     .url(url1)

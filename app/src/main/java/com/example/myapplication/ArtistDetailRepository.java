@@ -76,13 +76,11 @@ public class ArtistDetailRepository {
                         pom[4] = b.get("playcount").toString();
                         b = js.getJSONObject("tags");
                         pom[5] = b.getJSONArray("tag").getJSONObject(0).getString("name");
-                        artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
-                        data.postValue(artist);
+                        //artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                        //data.postValue(artist);
                         String artist1 = name;
-                        if (artist1.contains(" ")) {
-                            artist1.replace(" ", "%20");
-                        }
-                        ArtistEntity ae = db.artistDao().findByName(artist1);
+                        final String artist_pom = artist1.replace(" ", "+");
+                        ArtistEntity ae = db.artistDao().findByName(artist_pom);
                         if (ae != null) {
                             pom[2] = ae.image;
                             artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
@@ -90,7 +88,7 @@ public class ArtistDetailRepository {
                             return;
                         }
                         OkHttpClient client1 = new OkHttpClient();
-                        String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20artist%20face&pageNumber=1&pageSize=1&safeSearch=true";
+                        String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&safeSearch=true";
                         Request request1 = new Request.Builder()
                                 .url(url1)
                                 .get()
@@ -111,7 +109,7 @@ public class ArtistDetailRepository {
                                     try {
                                         JSONObject jsonObject = new JSONObject(artist2);
                                         JSONArray o = jsonObject.getJSONArray("value");
-                                        String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                        String thumbnail = o.getJSONObject(0).getString("url");
                                         pom[2] = thumbnail;
                                         ArtistEntity novi = new ArtistEntity();
                                         novi.artist_name = artist1;

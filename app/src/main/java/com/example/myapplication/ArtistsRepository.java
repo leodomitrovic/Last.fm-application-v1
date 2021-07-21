@@ -1,22 +1,13 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.SystemClock;
-import android.text.style.ScaleXSpan;
 import android.util.Log;
-import android.widget.SearchView;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
-import com.google.gson.JsonObject;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.BaseJsonHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.revinate.guava.util.concurrent.RateLimiter;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -29,18 +20,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import cz.msebera.android.httpclient.Header;
-import okhttp3.Cache;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ArtistsRepository {
-    private static ArtistsRepository instance = null;
+public class ArtistsRepository implements Interceptor {
+    private RateLimiter limiter = RateLimiter.create(5);
     private List<Artist> dataSet = new ArrayList<>();
     AppDatabase db;
 
@@ -94,33 +82,19 @@ public class ArtistsRepository {
                         for (int i = 0; i < dataSet.size(); i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
-                            if (artist1.contains(" ")) {
-                                artist1.replace(" ", "%20");
-                            }
-                            ArtistEntity ae = db.artistDao().findByName(artist1);
+                            final String artist_pom = artist1.replace(" ", "+");
+                            ArtistEntity ae = db.artistDao().findByName(artist_pom);
                             if (ae != null) {
                                 dataSet.get(i).icon = Uri.parse(ae.image);
                                 data.postValue(dataSet);
                                 continue;
                             }
 
-                            Dispatcher dispatcher = new Dispatcher();
-                            dispatcher.setMaxRequests(1);
-
-                            Interceptor interceptor = new Interceptor() {
-                                @Override
-                                public Response intercept(Chain chain) throws IOException {
-                                    SystemClock.sleep(2000);
-                                    return chain.proceed(chain.request());
-                                }
-                            };
-
                             OkHttpClient client1 = new OkHttpClient.Builder()
-                                    .addNetworkInterceptor(interceptor)
-                                    .dispatcher(dispatcher)
+                                    .addInterceptor(ArtistsRepository.this)
                                     .build();
 
-                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20artist%20face&pageNumber=1&pageSize=2&autoCorrect=true&safeSearch=true";
+                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&safeSearch=true";
                             Request request1 = new Request.Builder()
                                     .url(url1)
                                     .get()
@@ -137,15 +111,15 @@ public class ArtistsRepository {
                                 @Override
                                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                     if (response.isSuccessful()) {
+                                        System.out.println("Response");
                                         String artist = Objects.requireNonNull(response.body()).string();
-                                        System.out.println("Ajmo " + artist);
                                         try {
                                             JSONObject jsonObject = new JSONObject(artist);
                                             JSONArray o = jsonObject.getJSONArray("value");
-                                            String thumbnail = o.getJSONObject(1).getString("url");
+                                            String thumbnail = o.getJSONObject(0).getString("url");
                                             dataSet.get(index).icon = Uri.parse(thumbnail);
                                             ArtistEntity novi = new ArtistEntity();
-                                            novi.artist_name = artist1;
+                                            novi.artist_name = artist_pom;
                                             novi.image = thumbnail;
                                             db.artistDao().insertAll(novi);
                                             data.postValue(dataSet);
@@ -153,6 +127,7 @@ public class ArtistsRepository {
                                             e.printStackTrace();
                                         }
                                     }
+                                    response.body().close();
                                 }
                             });
                         }
@@ -160,8 +135,16 @@ public class ArtistsRepository {
                         e.printStackTrace();
                     }
                 }
+                response.body().close();
             }
         });
         return data;
+    }
+
+    @NotNull
+    @Override
+    public Response intercept(@NotNull Chain chain) throws IOException {
+        limiter.acquire(5);
+        return chain.proceed(chain.request());
     }
 }
