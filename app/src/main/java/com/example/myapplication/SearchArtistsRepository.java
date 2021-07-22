@@ -31,7 +31,7 @@ import okhttp3.Response;
 
 public class SearchArtistsRepository implements Interceptor {
     private RateLimiter limiter = RateLimiter.create(3);
-    private List<Artist> dataSet = new ArrayList<>();
+    private List<Artist> dataSet;
     AppDatabase db;
 
     public SearchArtistsRepository(Application app){
@@ -39,6 +39,7 @@ public class SearchArtistsRepository implements Interceptor {
     }
 
     public MutableLiveData<List<Artist>> setArtists(String name) {
+        dataSet = new ArrayList<>();
         MutableLiveData<List<Artist>> data = new MutableLiveData<>();
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
@@ -80,7 +81,7 @@ public class SearchArtistsRepository implements Interceptor {
                             dataSet.add(artist);
                         }
                         data.postValue(dataSet);
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 0; i < dataSet.size(); i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
                             final String artist_pom = artist1.replace(" ", "%20");
