@@ -26,7 +26,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ArtistDetailRepository {
-    private Artist artist = null;
+    private Artist artist;
     private List<Track> dataSet = new ArrayList<>();
     AppDatabase db;
 
@@ -35,6 +35,7 @@ public class ArtistDetailRepository {
     }
 
     public MutableLiveData<Artist> setData(String name) {
+        artist = null;
         MutableLiveData<Artist> data = new MutableLiveData<>();
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(7, TimeUnit.SECONDS)
@@ -42,9 +43,7 @@ public class ArtistDetailRepository {
                 .readTimeout(7, TimeUnit.SECONDS)
                 .build();
         String artist1 = name;
-        if (artist1.contains(" ")) {
-            artist1.replace(" ", "+");
-        }
+        artist1 = artist1.replace(" ", "+");
         String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=&format=json";
         final Request request = new Request.Builder()
                 .url(url)
@@ -72,18 +71,24 @@ public class ArtistDetailRepository {
                         JSONArray a = js.getJSONArray("image");
                         pom[2] = a.getJSONObject(0).get("#text").toString();
                         JSONObject b = js.getJSONObject("stats");
-                        pom[3] = b.get("listeners").toString();
-                        pom[4] = b.get("playcount").toString();
-                        b = js.getJSONObject("tags");
-                        pom[5] = b.getJSONArray("tag").getJSONObject(0).getString("name");
+                        if (b != null) {
+                            pom[3] = b.get("listeners").toString();
+                            pom[4] = b.get("playcount").toString();
+                            if (!js.get("tags").equals("")) {
+                                b = js.getJSONObject("tags");
+                                JSONArray tag = b.getJSONArray("tag");
+                                if (tag != null) {
+                                    pom[5] = tag.getJSONObject(0).getString("name");
+                                }
+                            }
+                        }
                         artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
                         data.postValue(artist);
                         String artist1 = name;
-                        final String artist_pom = artist1.replace(" ", "%20");
+                        final String artist_pom = artist1;/*.replace(" ", "%20");*/
                         ArtistEntity ae = db.artistDao().findByName(artist_pom);
                         if (ae != null) {
-                            pom[2] = ae.image;
-                            artist.icon = Uri.parse(pom[2]);
+                            artist.icon = Uri.parse(ae.image);
                             data.postValue(artist);
                             return;
                         }
@@ -101,7 +106,7 @@ public class ArtistDetailRepository {
                             @Override
                             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                                 System.out.println("Failure");
-                                //data.postValue(dataSet);
+                                data.postValue(artist);
                             }
 
                             @Override

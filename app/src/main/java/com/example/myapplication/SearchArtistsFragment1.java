@@ -56,7 +56,7 @@ public class SearchArtistsFragment1 extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 perform();
-                return false;
+                return true;
             }
         });
 

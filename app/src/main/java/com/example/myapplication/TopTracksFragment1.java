@@ -36,7 +36,7 @@ public class TopTracksFragment1 extends Fragment /*implements LifecycleOwner, Vi
         rv = view.findViewById(R.id.rv1);
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         model = new ViewModelProvider(requireActivity()).get(TopTracksViewModel.class);
-        model.init(getViewLifecycleOwner());
+        model.init();
         final Observer<List<Track>> tracksObserver = new Observer<List<Track>>() {
             @Override
             public void onChanged(List<Track> tracks) {

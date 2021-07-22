@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.app.Application;
 import android.net.Uri;
-import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -23,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -81,7 +79,7 @@ public class SearchArtistsRepository implements Interceptor {
                             dataSet.add(artist);
                         }
                         data.postValue(dataSet);
-                        for (int i = 0; i < dataSet.size(); i++) {
+                        for (int i = 0; i < 1; i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
                             final String artist_pom = artist1.replace(" ", "%20");

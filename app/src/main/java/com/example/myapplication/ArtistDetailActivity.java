@@ -46,7 +46,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(Artist artist) {
                 binding.setArtis(artist);
-                Glide.with(getApplicationContext()).load(artist.icon).into(i);
+                if (artist != null) Glide.with(getApplicationContext()).load(artist.icon).into(i);
                 binding.executePendingBindings();
             }
         };

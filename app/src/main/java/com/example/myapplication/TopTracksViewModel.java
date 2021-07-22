@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,7 +10,7 @@ public class TopTracksViewModel extends ViewModel {
     MutableLiveData<List<Track>> tracks;
     private TracksRepository repo;
 
-    public void init(LifecycleOwner owner){
+    public void init(){
         if(tracks != null){
             return;
         }

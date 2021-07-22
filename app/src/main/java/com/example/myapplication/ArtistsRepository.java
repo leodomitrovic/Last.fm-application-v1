@@ -79,7 +79,7 @@ public class ArtistsRepository implements Interceptor {
                             dataSet.add(a);
                         }
                         data.postValue(dataSet);
-                        for (int i = 0; i < 1; i++) {
+                        for (int i = 0; i < 0; i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
                             final String artist_pom = artist1.replace(" ", "%20");

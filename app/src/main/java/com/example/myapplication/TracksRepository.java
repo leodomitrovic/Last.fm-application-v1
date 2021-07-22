@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.net.Uri;
 import android.util.Log;
-import android.widget.SearchView;
 
 import androidx.lifecycle.MutableLiveData;
 
