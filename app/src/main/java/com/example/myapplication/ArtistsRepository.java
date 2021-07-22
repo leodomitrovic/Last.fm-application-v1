@@ -28,7 +28,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ArtistsRepository implements Interceptor {
-    private RateLimiter limiter = RateLimiter.create(5);
+    private RateLimiter limiter = RateLimiter.create(3);
     private List<Artist> dataSet = new ArrayList<>();
     AppDatabase db;
 
@@ -82,7 +82,7 @@ public class ArtistsRepository implements Interceptor {
                         for (int i = 0; i < dataSet.size(); i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
-                            final String artist_pom = artist1.replace(" ", "+");
+                            final String artist_pom = artist1.replace(" ", "%20");
                             ArtistEntity ae = db.artistDao().findByName(artist_pom);
                             if (ae != null) {
                                 dataSet.get(i).icon = Uri.parse(ae.image);
@@ -94,12 +94,14 @@ public class ArtistsRepository implements Interceptor {
                                     .addInterceptor(ArtistsRepository.this)
                                     .build();
 
-                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&safeSearch=true";
+                            //String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&autoCorrect=true&safeSearch=true";
+                            String url1 = "https://bing-image-search1.p.rapidapi.com/images/search?q=" + artist_pom;
                             Request request1 = new Request.Builder()
                                     .url(url1)
                                     .get()
                                     .addHeader("x-rapidapi-key", "")
-                                    .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                    //.addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                    .addHeader("x-rapidapi-host", "bing-image-search1.p.rapidapi.com")
                                     .build();
                             client1.newCall(request1).enqueue(new Callback() {
                                 @Override
@@ -111,12 +113,11 @@ public class ArtistsRepository implements Interceptor {
                                 @Override
                                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                     if (response.isSuccessful()) {
-                                        System.out.println("Response");
                                         String artist = Objects.requireNonNull(response.body()).string();
                                         try {
                                             JSONObject jsonObject = new JSONObject(artist);
                                             JSONArray o = jsonObject.getJSONArray("value");
-                                            String thumbnail = o.getJSONObject(0).getString("url");
+                                            String thumbnail = o.getJSONObject(0).getString("thumbnailUrl");
                                             dataSet.get(index).icon = Uri.parse(thumbnail);
                                             ArtistEntity novi = new ArtistEntity();
                                             novi.artist_name = artist_pom;
@@ -144,7 +145,7 @@ public class ArtistsRepository implements Interceptor {
     @NotNull
     @Override
     public Response intercept(@NotNull Chain chain) throws IOException {
-        limiter.acquire(5);
+        limiter.acquire(3);
         return chain.proceed(chain.request());
     }
 }

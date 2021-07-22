@@ -8,6 +8,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
+import com.revinate.guava.util.concurrent.RateLimiter;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +29,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class SearchArtistsRepository {
+public class SearchArtistsRepository implements Interceptor {
+    private RateLimiter limiter = RateLimiter.create(3);
     private List<Artist> dataSet = new ArrayList<>();
     AppDatabase db;
 
@@ -77,32 +80,35 @@ public class SearchArtistsRepository {
                             dataSet.add(artist);
                         }
                         data.postValue(dataSet);
-                        for (int i = 0; i < dataSet.size() - 25; i++) {
+                        for (int i = 0; i < 10; i++) {
                             String artist1 = dataSet.get(i).name;
                             final int index = i;
-                            if (artist1.contains(" ")) {
-                                artist1.replace(" ", "%20");
-                            }
-                            ArtistEntity ae = db.artistDao().findByName(artist1);
+                            final String artist_pom = artist1.replace(" ", "%20");
+                            ArtistEntity ae = db.artistDao().findByName(artist_pom);
                             if (ae != null) {
                                 dataSet.get(i).icon = Uri.parse(ae.image);
                                 data.postValue(dataSet);
                                 continue;
                             }
 
-                            OkHttpClient client1 = new OkHttpClient();
-                            String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20face&pageNumber=1&pageSize=1&autoCorrect=true";
+                            OkHttpClient client1 = new OkHttpClient.Builder()
+                                    .addInterceptor(SearchArtistsRepository.this)
+                                    .build();
+
+                            //String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist1 + "%20face&pageNumber=1&pageSize=1&autoCorrect=true";
+                            String url1 = "https://bing-image-search1.p.rapidapi.com/images/search?q=" + artist_pom;
                             Request request1 = new Request.Builder()
                                     .url(url1)
                                     .get()
                                     .addHeader("x-rapidapi-key", "")
-                                    .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                    //.addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                    .addHeader("x-rapidapi-host", "bing-image-search1.p.rapidapi.com")
                                     .build();
                             client1.newCall(request1).enqueue(new Callback() {
                                 @Override
                                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                                     System.out.println("Failure");
-                                    //data.postValue(dataSet);
+                                    data.postValue(dataSet);
                                 }
 
                                 @Override
@@ -112,10 +118,11 @@ public class SearchArtistsRepository {
                                         try {
                                             JSONObject jsonObject = new JSONObject(artist);
                                             JSONArray o = jsonObject.getJSONArray("value");
-                                            String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                            //String thumbnail = o.getJSONObject(0).getString("thumbnail");
+                                            String thumbnail = o.getJSONObject(0).getString("thumbnailUrl");
                                             dataSet.get(index).icon = Uri.parse(thumbnail);
                                             ArtistEntity novi = new ArtistEntity();
-                                            novi.artist_name = artist1;
+                                            novi.artist_name = artist_pom;
                                             novi.image = thumbnail;
                                             db.artistDao().insertAll(novi);
                                             data.postValue(dataSet);
@@ -123,6 +130,7 @@ public class SearchArtistsRepository {
                                             e.printStackTrace();
                                         }
                                     }
+                                    response.body().close();
                                 }
                             });
                         }
@@ -130,8 +138,16 @@ public class SearchArtistsRepository {
                         e.printStackTrace();
                     }
                 }
+                response.body().close();
             }
         });
         return data;
+    }
+
+    @NotNull
+    @Override
+    public Response intercept(@NotNull Chain chain) throws IOException {
+        limiter.acquire(3);
+        return chain.proceed(chain.request());
     }
 }

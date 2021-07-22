@@ -76,24 +76,26 @@ public class ArtistDetailRepository {
                         pom[4] = b.get("playcount").toString();
                         b = js.getJSONObject("tags");
                         pom[5] = b.getJSONArray("tag").getJSONObject(0).getString("name");
-                        //artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
-                        //data.postValue(artist);
+                        artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                        data.postValue(artist);
                         String artist1 = name;
-                        final String artist_pom = artist1.replace(" ", "+");
+                        final String artist_pom = artist1.replace(" ", "%20");
                         ArtistEntity ae = db.artistDao().findByName(artist_pom);
                         if (ae != null) {
                             pom[2] = ae.image;
-                            artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                            artist.icon = Uri.parse(pom[2]);
                             data.postValue(artist);
                             return;
                         }
                         OkHttpClient client1 = new OkHttpClient();
-                        String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&safeSearch=true";
+                        //String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&safeSearch=true";
+                        String url1 = "https://bing-image-search1.p.rapidapi.com/images/search?q=" + artist_pom;
                         Request request1 = new Request.Builder()
                                 .url(url1)
                                 .get()
                                 .addHeader("x-rapidapi-key", "")
-                                .addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                //.addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
+                                .addHeader("x-rapidapi-host", "bing-image-search1.p.rapidapi.com")
                                 .build();
                         client1.newCall(request1).enqueue(new Callback() {
                             @Override
@@ -109,13 +111,13 @@ public class ArtistDetailRepository {
                                     try {
                                         JSONObject jsonObject = new JSONObject(artist2);
                                         JSONArray o = jsonObject.getJSONArray("value");
-                                        String thumbnail = o.getJSONObject(0).getString("url");
+                                        String thumbnail = o.getJSONObject(0).getString("thumbnailUrl");
                                         pom[2] = thumbnail;
                                         ArtistEntity novi = new ArtistEntity();
-                                        novi.artist_name = artist1;
+                                        novi.artist_name = artist_pom;
                                         novi.image = thumbnail;
                                         db.artistDao().insertAll(novi);
-                                        artist = new Artist(pom[0], pom[3], Uri.parse(pom[2]), pom[4], pom[1], pom[5]);
+                                        artist.icon = Uri.parse(pom[2]);
                                         data.postValue(artist);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
