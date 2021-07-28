@@ -40,7 +40,7 @@ public class TracksRepository {
                 .writeTimeout(7, TimeUnit.SECONDS)
                 .readTimeout(7, TimeUnit.SECONDS)
                 .build();
-        String url = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=&format=json";
+        String url = "https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=&format=json";
 
         final Request request = new Request.Builder()
                 .url(url)

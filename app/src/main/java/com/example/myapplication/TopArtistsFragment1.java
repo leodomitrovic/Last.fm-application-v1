@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class TopArtistsFragment1 extends Fragment {
     RecyclerView rv;
     private AdapterArtists aa;
     private TopArtistsViewModel model;
+    ProgressBar p;
 
     public TopArtistsFragment1() {
         // Required empty public constructor
@@ -35,6 +38,7 @@ public class TopArtistsFragment1 extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_top_artists, container, false);
         rv = view.findViewById(R.id.rv);
+        p = view.findViewById(R.id.progressBar3);
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         model = new ViewModelProvider(requireActivity()).get(TopArtistsViewModel.class);
         model.init();
@@ -42,12 +46,17 @@ public class TopArtistsFragment1 extends Fragment {
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
-                if (aa != null) {
-                    aa.artists = artists;
-                    aa.notifyDataSetChanged();
-                    return;
+                if (artists.size() < 50) {
+                    p.setProgress(artists.size());
+                } else {
+                    p.setVisibility(View.INVISIBLE);
+                    if (aa != null) {
+                        aa.artists = artists;
+                        aa.notifyDataSetChanged();
+                        return;
+                    }
+                    initRecyclerView(artists);
                 }
-                initRecyclerView(artists);
             }
         };
         model.getArtists().observe(getViewLifecycleOwner(), tracksObserver);

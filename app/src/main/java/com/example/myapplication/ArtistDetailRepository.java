@@ -44,7 +44,7 @@ public class ArtistDetailRepository {
                 .build();
         String artist1 = name;
         artist1 = artist1.replace(" ", "+");
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=&format=json";
+        String url = "https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + artist1 + "&api_key=&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")
@@ -93,13 +93,11 @@ public class ArtistDetailRepository {
                             return;
                         }
                         OkHttpClient client1 = new OkHttpClient();
-                        //String url1 = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI?q=" + artist_pom + "+head&pageNumber=1&pageSize=1&safeSearch=true";
                         String url1 = "https://bing-image-search1.p.rapidapi.com/images/search?q=" + artist_pom;
                         Request request1 = new Request.Builder()
                                 .url(url1)
                                 .get()
                                 .addHeader("x-rapidapi-key", "")
-                                //.addHeader("x-rapidapi-host", "contextualwebsearch-websearch-v1.p.rapidapi.com")
                                 .addHeader("x-rapidapi-host", "bing-image-search1.p.rapidapi.com")
                                 .build();
                         client1.newCall(request1).enqueue(new Callback() {
@@ -151,7 +149,7 @@ public class ArtistDetailRepository {
         if (artist1.contains(" ")) {
             artist1.replace(" ", "+");
         }
-        String url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=" + artist1 + "&api_key=&format=json";
+        String url = "https://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=" + artist1 + "&api_key=&format=json";
         final Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")

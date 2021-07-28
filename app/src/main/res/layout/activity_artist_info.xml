@@ -4,20 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="artis" type="com.example.myapplication.Artist" />
+
+        <variable
+            name="artis"
+            type="com.example.myapplication.Artist" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/root5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
         tools:context=".SearchArtistsFragment1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="455dp"
+            android:layout_weight="0.99"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -68,6 +73,7 @@
                 android:layout_height="64dp"
                 android:layout_marginEnd="120dp"
                 android:layout_marginBottom="60dp"
+                android:autoLink="web"
                 android:text="@{artis.urlv}"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -140,10 +146,10 @@
 
             <ImageView
                 android:id="@+id/imageView3"
-                android:layout_width="95dp"
-                android:layout_height="96dp"
-                android:layout_marginTop="88dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="80dp"
+                android:layout_height="83dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="4dp"
                 android:contentDescription="@string/artist_icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -152,19 +158,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/root8"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="276dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="406dp"
+            android:layout_weight="0.013">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv6"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="82dp"
-                tools:layout_editor_absoluteY="66dp" />
+                android:layout_height="match_parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class SearchArtistsFragment1 extends Fragment {
     private SearchArtistsViewModel model;
     ImageView search;
     EditText e;
+    ProgressBar p;
 
     public SearchArtistsFragment1() {
         // Required empty public constructor
@@ -43,6 +45,7 @@ public class SearchArtistsFragment1 extends Fragment {
         rv = view.findViewById(R.id.rv2);
         rv.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         search = view.findViewById(R.id.imageView4);
+        p = view.findViewById(R.id.progressBar2);
         e = view.findViewById(R.id.editTextTextPersonName2);
         model = new ViewModelProvider(getActivity()).get(SearchArtistsViewModel.class);
         search.setOnClickListener(new View.OnClickListener() {
@@ -64,11 +67,19 @@ public class SearchArtistsFragment1 extends Fragment {
     }
 
     private void perform() {
+        p.setVisibility(View.VISIBLE);
+        aa = null;
+        rv.setAdapter(aa);
         model.init(e.getText().toString());
         final Observer<List<Artist>> tracksObserver = new Observer<List<Artist>>() {
             @Override
             public void onChanged(List<Artist> artists) {
-                initRecyclerView(artists);
+                if (artists.size() < 30) { //30
+                    p.setProgress(artists.size());
+                } else {
+                    p.setVisibility(View.INVISIBLE);
+                    initRecyclerView(artists);
+                }
 
             }
         };

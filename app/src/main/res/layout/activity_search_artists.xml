@@ -48,6 +48,21 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="183dp"
+            android:layout_height="31dp"
+            android:layout_marginTop="244dp"
+            android:layout_marginEnd="112dp"
+            android:max="30"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
